@@ -1,0 +1,62 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Singularity containers: ignored
+Job stats:
+job          count    min threads    max threads
+---------  -------  -------------  -------------
+all              1              1              1
+frag_filt        2              1              1
+total            3              1              1
+
+Select jobs to execute...
+
+[Tue May  3 09:19:36 2022]
+rule frag_filt:
+    input: test/bam/lib001.bam
+    output: test/frag-bam/lib001_frag90_150.nohead, test/frag-bam/lib001_frag90_150.onlyhead, test/frag-bam/lib001_frag90_150.bam
+    jobid: 2
+    wildcards: library_id=lib001, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+[Tue May  3 09:19:36 2022]
+rule frag_filt:
+    input: test/bam/lib002.bam
+    output: test/frag-bam/lib002_frag90_150.nohead, test/frag-bam/lib002_frag90_150.onlyhead, test/frag-bam/lib002_frag90_150.bam
+    jobid: 1
+    wildcards: library_id=lib002, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+[Tue May  3 09:19:36 2022]
+Error in rule frag_filt:
+    jobid: 2
+    output: test/frag-bam/lib001_frag90_150.nohead, test/frag-bam/lib001_frag90_150.onlyhead, test/frag-bam/lib001_frag90_150.bam
+    shell:
+        
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        workflow/scripts/frag_filt.sh test/bam/lib001.bam                                       test/frag-bam/lib001_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib001_frag90_150.onlyhead                                       test/frag-bam/lib001_frag90_150.bam
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Removing output files of failed job frag_filt since they might be corrupted:
+test/frag-bam/lib001_frag90_150.nohead, test/frag-bam/lib001_frag90_150.onlyhead
+[Tue May  3 09:19:36 2022]
+Error in rule frag_filt:
+    jobid: 1
+    output: test/frag-bam/lib002_frag90_150.nohead, test/frag-bam/lib002_frag90_150.onlyhead, test/frag-bam/lib002_frag90_150.bam
+    shell:
+        
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        workflow/scripts/frag_filt.sh test/bam/lib002.bam                                       test/frag-bam/lib002_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib002_frag90_150.onlyhead                                       test/frag-bam/lib002_frag90_150.bam
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Removing output files of failed job frag_filt since they might be corrupted:
+test/frag-bam/lib002_frag90_150.nohead, test/frag-bam/lib002_frag90_150.onlyhead
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /home/jeszyman/repos/cfdna-cna/.snakemake/log/2022-05-03T091936.279092.snakemake.log

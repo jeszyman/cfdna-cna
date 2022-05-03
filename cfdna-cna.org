@@ -1,24 +1,27 @@
 * cfDNA Copy Numer Alteration Analysis :biopipe:
 :PROPERTIES:
 :logging: nil
-:header-args:bash: :tangle-mode (identity #0555)
+:header-args:bash: :tangle-mode (identity #o555)
 :END:
-** README
-*** Change Log
-- [2022-04-29 Fri]: First commit, copying from the old mpnst-cna repo. Untested. 
 ** Setup
+*** Repository
+#+begin_src bash
+biotools/src/add_biorepo_dirs.sh ~/repos/cfdna-cna
+#+end_src
+*** Emacs and Org-mode
+#+startup: shrink
 *** Snakemake
 **** Configuration YAMLs
 - repo_test
   #+begin_src bash :tangle ./config/repo_test.yaml
-container: "/home/jeszyman/sing_containers/mpnst.sif"
+container: "~/sing_containers/mpnst.sif"
 log_dir: "test/logs"
 threads: "4"
 inputs_dir: "test/inputs"
-bam_dir: "test/bam"
 frag_bam_dir: "test/frag-bam"
 wig_dir: "test/wig"
 ichor_dir: "test/ichor"
+cna_bam_dir: "test/bam"
 #+end_src
 **** Run commands
 #+begin_src bash :tangle ./src/smk_repo_test.sh
@@ -52,17 +55,6 @@ snakemake \
     --rulegraph \
     --snakefile ./workflow/read_preprocess.smk | dot -Tpdf > resources/read_preprocess_dagtmp/test.pdf
 #+end_src
-
-*** Repository
-#+begin_src bash
-mkdir -p config
-mkdir -p resources
-mkdir -p source
-mkdir -p test
-mkdir -p workflow/scripts
-#+end_src
-*** Emacs and Org-mode
-#+startup: shrink
 *** Integration testing setup
 #+begin_src bash
 mkdir -p test/bam
@@ -89,19 +81,19 @@ sambamba view -s $FACTOR -f bam -l 5 $1
 SubSample /mnt/ris/aadel/mpnst/bam/lib081_dedup_sorted.bam 100000 > test/bam/lib001.bam
 SubSample /mnt/ris/aadel/mpnst/bam/lib082_dedup_sorted.bam 100000 > test/bam/lib002.bam
 #+end_src
-** TODO Repo-local integration testing                                  :smk:
+** Integration testing                                                  :smk:
 #+begin_src snakemake :tangle ./workflow/cfdna_cna_int_test.smk
 container: config["container"]
 
-IDS, = glob_wildcards(config["cna_bam_dir"] + "/{id}.bam"
+IDS, = glob_wildcards(config["cna_bam_dir"] + "/{id}.bam")
 
 rule all:
     input:
-        expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = IDS, frag_distro = ["90_150"]),
-        expand(config["ichor_dir"] + "/{library_id}_frag{frag_distro}.file", library_id = IDS, frag_distro = ["90_150"]),
- 
+        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = IDS, frag_distro = ["90_150"]),
+
+include: "cfdna_wgs_cna.smk"
 #+end_src
-** cfDNA WGS CNA :smk:
+** [[file:workflow/cfdna_wgs_cna.smk][cfDNA WGS CNA]] :smk:
 :PROPERTIES:
 :header-args:snakemake: :tangle ./workflow/cfdna_wgs_cna.smk
 :END:
@@ -109,7 +101,7 @@ rule all:
 #+begin_src snakemake
 rule frag_filt:
     input:
-        config["bam_dir"] + "/{library_id}.bam"
+        config["cna_bam_dir"] + "/{library_id}.bam"
     params:
         out_dir = config["frag_bam_dir"]
     output:
@@ -234,6 +226,9 @@ facets for independent ichor confirm? https://github.com/mskcc/facets/issues/72
 ichor does cn loh calls- check out
 
 
+** README
+*** Change Log
+- [2022-04-29 Fri]: First commit, copying from the old mpnst-cna repo. Untested. 
 ** Ideas
 - ichor PON
 - extract tf
