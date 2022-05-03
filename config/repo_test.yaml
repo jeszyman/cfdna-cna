@@ -1,0 +1,8 @@
+container: "~/sing_containers/mpnst.sif"
+log_dir: "test/logs"
+threads: "4"
+inputs_dir: "test/inputs"
+frag_bam_dir: "test/frag-bam"
+wig_dir: "test/wig"
+ichor_dir: "test/ichor"
+cna_bam_dir: "test/bam"
