@@ -1,0 +1,99 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job           count    min threads    max threads
+----------  -------  -------------  -------------
+all               1              1              1
+bam_to_wig        2              1              1
+frag_filt         2              1              1
+total             5              1              1
+
+Select jobs to execute...
+
+[Wed May  4 12:10:37 2022]
+rule frag_filt:
+    input: test/bam/lib001.bam
+    output: test/frag-bam/lib001_frag90_150.nohead, test/frag-bam/lib001_frag90_150.onlyhead, test/frag-bam/lib001_frag90_150.bam
+    jobid: 2
+    wildcards: library_id=lib001, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        workflow/scripts/frag_filt.sh test/bam/lib001.bam                                       test/frag-bam/lib001_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib001_frag90_150.onlyhead                                       test/frag-bam/lib001_frag90_150.bam
+        
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+
+[Wed May  4 12:10:37 2022]
+rule frag_filt:
+    input: test/bam/lib002.bam
+    output: test/frag-bam/lib002_frag90_150.nohead, test/frag-bam/lib002_frag90_150.onlyhead, test/frag-bam/lib002_frag90_150.bam
+    jobid: 1
+    wildcards: library_id=lib002, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        workflow/scripts/frag_filt.sh test/bam/lib002.bam                                       test/frag-bam/lib002_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib002_frag90_150.onlyhead                                       test/frag-bam/lib002_frag90_150.bam
+        
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib002_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib002_frag90_150.onlyhead.
+[Wed May  4 12:10:38 2022]
+Finished job 1.
+1 of 5 steps (20%) done
+Select jobs to execute...
+
+[Wed May  4 12:10:38 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib002_frag90_150.bam
+    output: test/wig/lib002_frag90_150.wig
+    jobid: 3
+    wildcards: library_id=lib002, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY"         test/frag-bam/lib002_frag90_150.bam > test/wig/lib002_frag90_150.wig
+        
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib001_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib001_frag90_150.onlyhead.
+[Wed May  4 12:10:38 2022]
+Finished job 2.
+2 of 5 steps (40%) done
+Select jobs to execute...
+
+[Wed May  4 12:10:38 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib001_frag90_150.bam
+    output: test/wig/lib001_frag90_150.wig
+    jobid: 4
+    wildcards: library_id=lib001, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY"         test/frag-bam/lib001_frag90_150.bam > test/wig/lib001_frag90_150.wig
+        
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed May  4 12:10:39 2022]
+Finished job 3.
+3 of 5 steps (60%) done
+[Wed May  4 12:10:39 2022]
+Finished job 4.
+4 of 5 steps (80%) done
+Select jobs to execute...
+
+[Wed May  4 12:10:39 2022]
+localrule all:
+    input: test/frag-bam/lib002_frag90_150.bam, test/frag-bam/lib001_frag90_150.bam, test/wig/lib002_frag90_150.wig, test/wig/lib001_frag90_150.wig
+    jobid: 0
+    resources: tmpdir=/tmp
+
+[Wed May  4 12:10:39 2022]
+Finished job 0.
+5 of 5 steps (100%) done
+Complete log: /home/jeszyman/repos/cfdna-cna/.snakemake/log/2022-05-04T121037.363039.snakemake.log

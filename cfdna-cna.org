@@ -1,3 +1,55 @@
+
+
+
+- works
+  - running a new hg19 wig from bam
+    #+begin_src bash
+Rscript /opt/ichorCNA/scripts/runIchorCNA.R --id tumor_sample \
+  --WIG ~/repos/cfdna-cna/test/wig/lib001_frag90_150.wig --ploidy "c(2,3)" --normal "c(0.5,0.6,0.7,0.8,0.9)" --maxCN 5 \
+  --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
+  --mapWig /opt/ichorCNA/inst/extdata/map_hg19_1000kb.wig \
+  --centromere /opt/ichorCNA/inst/extdata/GRCh37.p13_centromere_UCSC-gapTable.txt \
+  --normalPanel /opt/ichorCNA/inst/extdata/HD_ULP_PoN_1Mb_median_normAutosome_mapScoreFiltered_median.rds \
+  --includeHOMD False --chrs "c(1:22, \"X\")" --chrTrain "c(1:22)" \
+  --estimateNormal True --estimatePloidy True --estimateScPrevalence True \
+  --scStates "c(1,3)" --txnE 0.9999 --txnStrength 10000 --outDir /tmp/ichor_out_test
+#+end_src    
+  - running an old hg19
+    #+begin_src bash
+  Rscript /opt/ichorCNA/scripts/runIchorCNA.R --id tumor_sample \
+    --WIG /tmp/test_hg19.wig --ploidy "c(2,3)" --normal "c(0.5,0.6,0.7,0.8,0.9)" --maxCN 5 \
+    --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
+    --mapWig /opt/ichorCNA/inst/extdata/map_hg19_1000kb.wig \
+    --centromere /opt/ichorCNA/inst/extdata/GRCh37.p13_centromere_UCSC-gapTable.txt \
+    --normalPanel /opt/ichorCNA/inst/extdata/HD_ULP_PoN_1Mb_median_normAutosome_mapScoreFiltered_median.rds \
+    --includeHOMD False --chrs "c(1:22, \"X\")" --chrTrain "c(1:22)" \
+    --estimateNormal True --estimatePloidy True --estimateScPrevalence True \
+    --scStates "c(1,3)" --txnE 0.9999 --txnStrength 10000 --outDir /tmp/ichor_out_test
+  #+end_src
+
+#+begin_src bash
+Rscript /path/to/ichorCNA/scripts/runIchorCNA.R --id tumor_sample \
+  --WIG /path/to/tumor.wig --ploidy "c(2,3)" --normal "c(0.5,0.6,0.7,0.8,0.9)" --maxCN 5 \
+  --gcWig /path/to/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
+  --mapWig /path/to/ichorCNA/inst/extdata/map_hg19_1000kb.wig \
+  --centromere /path/to/ichorCNA/inst/extdata/GRCh37.p13_centromere_UCSC-gapTable.txt \
+  --normalPanel /path/to/ichorCNA/inst/extdata/HD_ULP_PoN_1Mb_median_normAutosome_mapScoreFiltered_median.rds \
+  --includeHOMD False --chrs "c(1:22, \"X\")" --chrTrain "c(1:22)" \
+  --estimateNormal True --estimatePloidy True --estimateScPrevalence True \
+  --scStates "c(1,3)" --txnE 0.9999 --txnStrength 10000 --outDir ./
+#+end_src
+#+begin_src bash
+Rscript /opt/ichorCNA/scripts/runIchorCNA.R \
+        --id {wildcards.library_id}_frag{wildcards.frag_distro} \
+        --WIG {input} \
+        --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig \
+        --normal "c(0.95, 0.995)" \
+        --ploidy "c(2)" \
+        --maxCN 3 \
+        --estimateScPrevalence FALSE \
+        --scStates "c()" \
+        --outDir {config[ichor_dir]}    
+#+end_src
 * cfDNA Copy Numer Alteration Analysis :biopipe:
 :PROPERTIES:
 :logging: nil
@@ -78,20 +130,11 @@ sambamba view -s $FACTOR -f bam -l 5 $1
 
 }
 
-SubSample /mnt/ris/aadel/mpnst/bam/lib081_dedup_sorted.bam 100000 > test/bam/lib001.bam
-SubSample /mnt/ris/aadel/mpnst/bam/lib082_dedup_sorted.bam 100000 > test/bam/lib002.bam
-#+end_src
-** Integration testing                                                  :smk:
-#+begin_src snakemake :tangle ./workflow/cfdna_cna_int_test.smk
-container: config["container"]
+SubSample /mnt/ris/aadel/mpnst/bam/lib081_dedup_sorted.bam 1000000 > test/bam/lib001.bam
+SubSample /mnt/ris/aadel/mpnst/bam/lib082_dedup_sorted.bam 1000000 > test/bam/lib002.bam
 
-IDS, = glob_wildcards(config["cna_bam_dir"] + "/{id}.bam")
-
-rule all:
-    input:
-        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = IDS, frag_distro = ["90_150"]),
-
-include: "cfdna_wgs_cna.smk"
+sambamba view -s .008 -f bam -l 5 /mnt/ris/aadel/mpnst/bam/lib070_dedup_sorted.bam > test/bam/lib001.bam
+sambamba view -s .008 -f bam -l 5 /mnt/ris/aadel/mpnst/bam/lib071_dedup_sorted.bam > test/bam/lib002.bam 
 #+end_src
 ** [[file:workflow/cfdna_wgs_cna.smk][cfDNA WGS CNA]] :smk:
 :PROPERTIES:
@@ -143,27 +186,29 @@ cat $6 $2 | sambamba view -t 4 -S -f bam /dev/stdin | sambamba sort -t 4 -o $7 /
 rule bam_to_wig:
     input: config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam",
     output: config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig",
+    params:
+        chrs = "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX"
     shell:
         """
         /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20 \
-        --chromosome "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY" \
+        --chromosome {params.chrs} \
         {input} > {output}
         """
 #+end_src
-*** Run ichor
+*** TODO Run ichor
 #+begin_src snakemake
 rule ichor:
     input:
         config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig",
     output:
-        config["ichor_dir"] + "/{library_id}_frag{frag_distro}.file",
+        config["ichor_dir"] + "/{library_id}_frag{frag_distro}.cna.seg",
     shell:
         """
         Rscript /opt/ichorCNA/scripts/runIchorCNA.R \
-         --id {wildcards.library_id}_{wildcards.frag_distro} \
+         --id {wildcards.library_id}_frag{wildcards.frag_distro} \
          --WIG {input} \
-         --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
-         --normal "c(0.95, 0.99, 0.995, 0.999)" \
+         --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig \
+         --normal "c(0.95, 0.995)" \
          --ploidy "c(2)" \
          --maxCN 3 \
          --estimateScPrevalence FALSE \
@@ -226,6 +271,23 @@ facets for independent ichor confirm? https://github.com/mskcc/facets/issues/72
 ichor does cn loh calls- check out
 
 
+** TODO Integration testing                                             :smk:
+#+begin_src snakemake :tangle ./workflow/cfdna_cna_int_test.smk
+container: config["container"]
+
+IDS, = glob_wildcards(config["cna_bam_dir"] + "/{id}.bam")
+
+rule all:
+    input:
+        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = IDS, frag_distro = ["90_150"]),
+        expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = IDS, frag_distro = ["90_150"]),
+        expand(config["ichor_dir"] + "/{library_id}_frag{frag_distro}.cna.seg", library_id = IDS, frag_distro = ["90_150"]),
+
+include: "cfdna_wgs_cna.smk"
+#+end_src
+#+begin_src bash :returns results
+basecamp/src/smk_forced_run.sh config/repo_test.yaml workflow/cfdna_cna_int_test.smk             
+#+end_src
 ** README
 *** Change Log
 - [2022-04-29 Fri]: First commit, copying from the old mpnst-cna repo. Untested. 
