@@ -1,0 +1,111 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job           count    min threads    max threads
+----------  -------  -------------  -------------
+all               1              1              1
+hg19_ichor        2              1              1
+total             3              1              1
+
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (2):
+	hg19_ichor
+	hg19_ichor
+Select jobs to execute...
+Selected jobs (2):
+	hg19_ichor
+	hg19_ichor
+Resources after job selection: {'_cores': 2, '_nodes': 9223372036854775805}
+
+[Mon May 16 15:14:23 2022]
+rule hg19_ichor:
+    input: test/wig/lib002_hg19_frag90_150.wig
+    output: test/ichor/lib002_hg19_frag90_150.cna.seg
+    jobid: 10
+    wildcards: library_id=lib002_hg19, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        workflow/scripts/ichor_lowfract_hg19.sh test/wig/lib002_hg19_frag90_150.wig test/ichor
+        
+ singularity  exec --home /home/jszymanski/repos/cfdna-cna --bind /home/jszymanski:/home/jszymanski --bind /mnt:/mnt /home/jszymanski/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        workflow/scripts/ichor_lowfract_hg19.sh test/wig/lib002_hg19_frag90_150.wig test/ichor'
+
+Activating singularity image /home/jszymanski/sing_containers/mpnst.sif
+[Mon May 16 15:14:23 2022]
+rule hg19_ichor:
+    input: test/wig/lib001_hg19_frag90_150.wig
+    output: test/ichor/lib001_hg19_frag90_150.cna.seg
+    jobid: 9
+    wildcards: library_id=lib001_hg19, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        workflow/scripts/ichor_lowfract_hg19.sh test/wig/lib001_hg19_frag90_150.wig test/ichor
+        
+ singularity  exec --home /home/jszymanski/repos/cfdna-cna --bind /home/jszymanski:/home/jszymanski --bind /mnt:/mnt /home/jszymanski/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        workflow/scripts/ichor_lowfract_hg19.sh test/wig/lib001_hg19_frag90_150.wig test/ichor'
+Activating singularity image /home/jszymanski/sing_containers/mpnst.sif
+[Mon May 16 15:14:24 2022]
+Error in rule hg19_ichor:
+    jobid: 9
+    output: test/ichor/lib001_hg19_frag90_150.cna.seg
+    shell:
+        
+        workflow/scripts/ichor_lowfract_hg19.sh test/wig/lib001_hg19_frag90_150.wig test/ichor
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Full Traceback (most recent call last):
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/site-packages/snakemake/executors/__init__.py", line 593, in _callback
+    raise ex
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/concurrent/futures/thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/site-packages/snakemake/executors/__init__.py", line 579, in cached_or_run
+    run_func(*args)
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/site-packages/snakemake/executors/__init__.py", line 2461, in run_wrapper
+    raise ex
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/site-packages/snakemake/executors/__init__.py", line 2418, in run_wrapper
+    run(
+  File "/home/jszymanski/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 92, in __rule_hg19_ichor
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/site-packages/snakemake/shell.py", line 287, in __new__
+    raise sp.CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command ' singularity  exec --home /home/jszymanski/repos/cfdna-cna --bind /home/jszymanski:/home/jszymanski --bind /mnt:/mnt /home/jszymanski/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        workflow/scripts/ichor_lowfract_hg19.sh test/wig/lib001_hg19_frag90_150.wig test/ichor'' returned non-zero exit status 127.
+
+[Mon May 16 15:14:24 2022]
+Error in rule hg19_ichor:
+    jobid: 10
+    output: test/ichor/lib002_hg19_frag90_150.cna.seg
+    shell:
+        
+        workflow/scripts/ichor_lowfract_hg19.sh test/wig/lib002_hg19_frag90_150.wig test/ichor
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Full Traceback (most recent call last):
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/site-packages/snakemake/executors/__init__.py", line 593, in _callback
+    raise ex
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/concurrent/futures/thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/site-packages/snakemake/executors/__init__.py", line 579, in cached_or_run
+    run_func(*args)
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/site-packages/snakemake/executors/__init__.py", line 2461, in run_wrapper
+    raise ex
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/site-packages/snakemake/executors/__init__.py", line 2418, in run_wrapper
+    run(
+  File "/home/jszymanski/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 92, in __rule_hg19_ichor
+  File "/home/jszymanski/.conda/envs/snakemake/lib/python3.10/site-packages/snakemake/shell.py", line 287, in __new__
+    raise sp.CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command ' singularity  exec --home /home/jszymanski/repos/cfdna-cna --bind /home/jszymanski:/home/jszymanski --bind /mnt:/mnt /home/jszymanski/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        workflow/scripts/ichor_lowfract_hg19.sh test/wig/lib002_hg19_frag90_150.wig test/ichor'' returned non-zero exit status 127.
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /home/jszymanski/repos/cfdna-cna/.snakemake/log/2022-05-16T151423.536641.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks
