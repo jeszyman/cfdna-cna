@@ -593,6 +593,7 @@ snakemake \
 *** TODO Integration testing setup
 #+begin_src bash
 
+
 singularity shell --bind /mnt:/mnt ~/sing_containers/biotools.sif 
 
 # Clear bam directory if present
@@ -605,6 +606,42 @@ sambamba view -s .003 -f bam -l 5 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002
 sambamba view -s .003 -f bam -l 5 /mnt/ris/aadel/mpnst/bam/lib070_dedup_sorted.bam > test/bam/lib001_hg19.bam
 sambamba view -s .003 -f bam -l 5 /mnt/ris/aadel/mpnst/bam/lib071_dedup_sorted.bam > test/bam/lib002_hg19.bam
 
+=======
+mkdir -p test/bam
+#mkdir -p test/inputs
+
+# Samples file manually created at test/inputs/samples/tsv
+
+singularity shell --bind /mnt:/mnt ~/sing_containers/biotools.sif 
+
+# Create small bam files to store in repo
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib070_dedup_sorted.bam > test/bam/lib001_hg19.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib071_dedup_sorted.bam > test/bam/lib002_hg19.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_CGAT_extract_ds20.bam > test/bam/lib003_hg38.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_ATCG_extract_dedup.bam > test/bam/lib004_hg38.bam 
+
+
+
+# function SubSample {
+
+# ## Calculate the sampling factor based on the intended number of reads:
+# FACTOR=$(samtools idxstats $1 | cut -f3 | awk -v COUNT=$2 'BEGIN {total=0} {total += $1} END {print COUNT/total}')
+
+# if [[ $FACTOR > 1 ]]
+#   then 
+#   echo '[ERROR]: Requested number of reads exceeds total read count in' $1 '-- exiting' && exit 1
+# fi
+
+# sambamba view -s $FACTOR -f bam -l 5 $1
+
+# }
+
+SubSample /mnt/ris/aadel/mpnst/bam/lib081_dedup_sorted.bam 1000000 > test/bam/lib001.bam
+SubSample /mnt/ris/aadel/mpnst/bam/lib082_dedup_sorted.bam 1000000 > test/bam/lib002.bam
+
+sambamba view -s .008 -f bam -l 5 /mnt/ris/aadel/mpnst/bam/lib070_dedup_sorted.bam > test/bam/lib001.bam
+sambamba view -s .008 -f bam -l 5 /mnt/ris/aadel/mpnst/bam/lib071_dedup_sorted.bam > test/bam/lib002.bam 
+>>>>>>> 1bf17f6 (2022-05-16)
 #+end_src
 ** [[file:workflow/cfdna_wgs_cna.smk][cfDNA WGS CNA]] :smk:
 :PROPERTIES:
