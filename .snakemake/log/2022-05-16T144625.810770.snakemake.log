@@ -1,0 +1,91 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job          count    min threads    max threads
+---------  -------  -------------  -------------
+all              1              1              1
+frag_filt        2              1              1
+total            3              1              1
+
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (2):
+	frag_filt
+	frag_filt
+Select jobs to execute...
+Selected jobs (2):
+	frag_filt
+	frag_filt
+Resources after job selection: {'_cores': 2, '_nodes': 9223372036854775805}
+
+[Mon May 16 14:46:26 2022]
+rule frag_filt:
+    input: test/bam/lib001_hg19.bam
+    output: test/frag-bam/lib001_hg19_frag90_150.nohead, test/frag-bam/lib001_hg19_frag90_150.onlyhead, test/frag-bam/lib001_hg19_frag90_150.bam
+    jobid: 1
+    wildcards: library_id=lib001_hg19, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        workflow/scripts/frag_filt.sh test/bam/lib001_hg19.bam                                       test/frag-bam/lib001_hg19_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib001_hg19_frag90_150.onlyhead                                       test/frag-bam/lib001_hg19_frag90_150.bam
+        
+ singularity  exec --home /home/jszymanski/repos/cfdna-cna --bind /home/jszymanski:/home/jszymanski --bind /mnt:/mnt /home/jszymanski/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        workflow/scripts/frag_filt.sh test/bam/lib001_hg19.bam                                       test/frag-bam/lib001_hg19_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib001_hg19_frag90_150.onlyhead                                       test/frag-bam/lib001_hg19_frag90_150.bam'
+
+Activating singularity image /home/jszymanski/sing_containers/mpnst.sif
+[Mon May 16 14:46:26 2022]
+rule frag_filt:
+    input: test/bam/lib002_hg19.bam
+    output: test/frag-bam/lib002_hg19_frag90_150.nohead, test/frag-bam/lib002_hg19_frag90_150.onlyhead, test/frag-bam/lib002_hg19_frag90_150.bam
+    jobid: 2
+    wildcards: library_id=lib002_hg19, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        workflow/scripts/frag_filt.sh test/bam/lib002_hg19.bam                                       test/frag-bam/lib002_hg19_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib002_hg19_frag90_150.onlyhead                                       test/frag-bam/lib002_hg19_frag90_150.bam
+        
+ singularity  exec --home /home/jszymanski/repos/cfdna-cna --bind /home/jszymanski:/home/jszymanski --bind /mnt:/mnt /home/jszymanski/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        workflow/scripts/frag_filt.sh test/bam/lib002_hg19.bam                                       test/frag-bam/lib002_hg19_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib002_hg19_frag90_150.onlyhead                                       test/frag-bam/lib002_hg19_frag90_150.bam'
+Activating singularity image /home/jszymanski/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib002_hg19_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib002_hg19_frag90_150.onlyhead.
+[Mon May 16 14:46:27 2022]
+Finished job 2.
+1 of 3 steps (33%) done
+Removing temporary output file test/frag-bam/lib001_hg19_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib001_hg19_frag90_150.onlyhead.
+[Mon May 16 14:46:27 2022]
+Finished job 1.
+2 of 3 steps (67%) done
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (1):
+	all
+Select jobs to execute...
+Using greedy selector because only single job has to be scheduled.
+Selected jobs (1):
+	all
+Resources after job selection: {'_cores': 3, '_nodes': 9223372036854775806}
+
+[Mon May 16 14:46:27 2022]
+localrule all:
+    input: test/frag-bam/lib001_hg19_frag90_150.bam, test/frag-bam/lib002_hg19_frag90_150.bam
+    jobid: 0
+    resources: tmpdir=/tmp
+
+[Mon May 16 14:46:27 2022]
+Finished job 0.
+3 of 3 steps (100%) done
+Complete log: /home/jszymanski/repos/cfdna-cna/.snakemake/log/2022-05-16T144625.810770.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks

@@ -414,3 +414,4 @@ outputHMM(cna = hmmResults.cor$cna, segs = hmmResults.cor$results$segs,
                       results = hmmResults.cor$results, patientID = patientID, outDir=outDir)
 outFile <- paste0(outDir, "/", patientID, ".params.txt")
 outputParametersToFile(hmmResults.cor, file = outFile)
+
