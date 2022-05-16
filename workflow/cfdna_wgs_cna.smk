@@ -42,8 +42,8 @@ rule ichor:
         Rscript /opt/ichorCNA/scripts/runIchorCNA.R \
          --id {wildcards.library_id}_frag{wildcards.frag_distro} \
          --WIG {input} \
-         --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig \
-         --normal "c(0.95, 0.995)" \
+         --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
+         --normal "c(0.95, 0.99)" \
          --ploidy "c(2)" \
          --maxCN 3 \
          --estimateScPrevalence FALSE \

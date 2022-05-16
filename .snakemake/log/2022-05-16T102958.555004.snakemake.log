@@ -1,0 +1,60 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job      count    min threads    max threads
+-----  -------  -------------  -------------
+all          1              1              1
+ichor        1              1              1
+total        2              1              1
+
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (1):
+	ichor
+Select jobs to execute...
+Using greedy selector because only single job has to be scheduled.
+Selected jobs (1):
+	ichor
+Resources after job selection: {'_cores': 3, '_nodes': 9223372036854775806}
+
+[Mon May 16 10:29:58 2022]
+rule ichor:
+    input: test/wig/lib001_hg19_frag90_150.wig
+    output: test/ichor/lib001_hg19_frag90_150.cna.seg
+    jobid: 5
+    wildcards: library_id=lib001_hg19, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript /opt/ichorCNA/scripts/runIchorCNA.R          --id lib001_hg19_frag90_150          --WIG test/wig/lib001_hg19_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript /opt/ichorCNA/scripts/runIchorCNA.R          --id lib001_hg19_frag90_150          --WIG test/wig/lib001_hg19_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Mon May 16 10:30:09 2022]
+Finished job 5.
+1 of 2 steps (50%) done
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (1):
+	all
+Select jobs to execute...
+Using greedy selector because only single job has to be scheduled.
+Selected jobs (1):
+	all
+Resources after job selection: {'_cores': 3, '_nodes': 9223372036854775806}
+
+[Mon May 16 10:30:09 2022]
+localrule all:
+    input: test/frag-bam/lib001_hg19_frag90_150.bam, test/frag-bam/lib002_hg19_frag90_150.bam, test/wig/lib001_hg19_frag90_150.wig, test/wig/lib002_hg19_frag90_150.wig, test/ichor/lib001_hg19_frag90_150.cna.seg
+    jobid: 0
+    resources: tmpdir=/tmp
+
+[Mon May 16 10:30:09 2022]
+Finished job 0.
+2 of 2 steps (100%) done
+Complete log: /home/jeszyman/repos/cfdna-cna/.snakemake/log/2022-05-16T102958.555004.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks
