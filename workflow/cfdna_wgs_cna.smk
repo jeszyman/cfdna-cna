@@ -11,7 +11,7 @@ rule frag_filt:
         """
         frag_min=$(echo {wildcards.frag_distro} | sed -e "s/_.*$//g")
         frag_max=$(echo {wildcards.frag_distro} | sed -e "s/^.*_//g")
-        workflow/scripts/frag_filt.sh {input} \
+        {config[cfdna_cna_repo]}/workflow/scripts/frag_filt.sh {input} \
                                       {output.nohead} \
                                       $frag_min \
                                       $frag_max \
@@ -39,7 +39,7 @@ rule hg19_ichor:
         config["ichor_hg19_dir"] + "/{library_id}_frag{frag_distro}.cna.seg",
     shell:
         """
-        Rscript workflow/scripts/MOD_runIchorCNA.R \
+        Rscript {config[cfdna_cna_repo]}/workflow/scripts/MOD_runIchorCNA.R \
          --id {wildcards.library_id}_frag{wildcards.frag_distro} \
          --WIG {input} \
          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
@@ -58,7 +58,7 @@ rule hg38_ichor:
         config["ichor_hg38_dir"] + "/{library_id}_frag{frag_distro}.cna.seg",
     shell:
         """
-        Rscript workflow/scripts/MOD_runIchorCNA.R \
+        Rscript {config[cfdna_cna_repo]}/workflow/scripts/MOD_runIchorCNA.R \
          --id {wildcards.library_id}_frag{wildcards.frag_distro} \
          --WIG {input} \
          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig \
