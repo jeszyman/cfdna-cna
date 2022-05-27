@@ -1,4 +1,5 @@
 container: "~/sing_containers/mpnst.sif"
+cfdna_cna_repo: "./"
 log_dir: "test/logs"
 threads: "4"
 inputs_dir: "test/inputs"
