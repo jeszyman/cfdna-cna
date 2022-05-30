@@ -52,22 +52,33 @@ ichor_hg19_dir: "test/ichor_hg19"
 ichor_hg38_dir: "test/ichor_hg38"
 cna_bam_dir: "test/bam"
 #+end_src
-*** TODO Integration testing setup
-rework as inputs folder 
+*** Integration testing setup
 #+begin_src bash
+# Setup- load singularity and bind RIS mount point
 singularity shell --bind /mnt:/mnt ~/sing_containers/mpnst.sif
 
-# Clear bam directory if present
-if [ -r test/bam ]; then \rm -rf test/bam; fi
-mkdir -p test/bam
-
 # Create small bam files to store in repo
-sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib070_dedup_sorted.bam > test/bam/lib001_hg19.bam
-sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib054_dedup_sorted.bam > test/bam/lib002_hg19.bam
-sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_ACAC_extract_ds20.bam > test/bam/lib003_hg38.bam
-sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_ATCG_extract_ds20.bam > test/bam/lib004_hg38.bam
+##
+## Hg19
+###
+### Normals
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib060_dedup_sorted.bam > test/inputs/lib001.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib061_dedup_sorted.bam > test/inputs/lib002.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib065_dedup_sorted.bam > test/inputs/lib003.bam
+###
+### MPNSTs
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib103_dedup_sorted.bam > test/inputs/lib004.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib107_dedup_sorted.bam > test/inputs/lib005.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib109_dedup_sorted.bam > test/inputs/lib006.bam
+##
+## Hg38, only from HiSeq15 for now
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_ACAC_extract_ds20.bam > test/inputs/lib007.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_ATCG_extract_ds20.bam > test/inputs/lib008.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_TAGC_extract_ds20.bam > test/inputs/lib009.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_GAAG_extract_ds20.bam > test/inputs/lib010.bam
 
-for file in test/bam/*.bam; do samtools index $file; done
+# Index all bams
+for file in test/inputs/*.bam; do samtools index $file; done
 
 #+end_src
 ** [[file:workflow/cfdna_wgs_cna.smk][cfDNA WGS CNA]] :smk:
