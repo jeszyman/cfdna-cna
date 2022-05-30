@@ -1,3 +1,38 @@
+#+begin_src python
+import pandas as pd
+
+samples = pd.read_table("samples.tsv").set_index("samples", drop = False)
+
+#+end_src
+#+begin_src fundamental :tangle ./test/wig/pon_wigs.txt
+/home/jeszyman/repos/cfdna-cna/test/wig/lib001_hg19_frag90_150.wig
+/home/jeszyman/repos/cfdna-cna/test/wig/lib002_hg19_frag90_150.wig
+#+end_src
+#+begin_src bash
+singularity shell ~/sing_containers/mpnst.sif
+
+Rscript /opt/ichorCNA/scripts/createPanelOfNormals.R \
+    --filelist ./test/wig/pon_wigs.txt \
+    --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
+    --mapWig /opt/ichorCNA/inst/extdata/map_hg19_1000kb.wig \
+    --centromere /opt/ichorCNA/inst/extdata/GRCh37.p13_centromere_UCSC-gapTable.txt \
+    --outfile base_outfile_nam
+
+mkdir -p /home/jeszyman/repos/cfdna-cna/tmp/testingPON
+
+Rscript /home/jeszyman/repos/cfdna-cna/workflow/scripts/MOD_runIchorCNA.R \
+        --id testing \
+        --WIG /home/jeszyman/repos/cfdna-cna/test/wig/lib001_hg19_frag90_150.wig \
+        --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
+        --normal "c(0.95, 0.99, 0.995, 0.999)" \
+        --ploidy "c(2)" \
+        --maxCN 3 \
+        --estimateScPrevalence FALSE \
+        --scStates "c()" \
+        --normalPanel base_outfile_nam_median.rds \
+        --outDir tmp/testingPON
+
+#+end_src    
 * cfDNA Copy Numer Alteration Analysis :biopipe:
 :PROPERTIES:
 :logging: nil
@@ -17,7 +52,8 @@ ichor_hg19_dir: "test/ichor_hg19"
 ichor_hg38_dir: "test/ichor_hg38"
 cna_bam_dir: "test/bam"
 #+end_src
-*** Integration testing setup
+*** TODO Integration testing setup
+rework as inputs folder 
 #+begin_src bash
 singularity shell --bind /mnt:/mnt ~/sing_containers/mpnst.sif
 
