@@ -1,8 +1,8 @@
 rule frag_filt:
     input:
-        config["cna_bam_dir"] + "/{library_id}.bam"
+        config["data_dir"] + "/bam/{library_id}.bam"
     params:
-        out_dir = config["frag_bam_dir"]
+        out_dir = config["data_dir"] + "/frag_bam"
     output:
         nohead = temp(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.nohead"),
         onlyhead = temp(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.onlyhead"),

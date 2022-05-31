@@ -1,8 +1,10 @@
 container: "~/sing_containers/mpnst.sif"
 cfdna_cna_repo: "./"
-log_dir: "test/logs"
 threads: "4"
+#
+data_dir: "test"
 inputs_dir: "test/inputs"
+log_dir: "test/logs"
 frag_bam_dir: "test/frag-bam"
 wig_dir: "test/wig"
 ichor_hg19_dir: "test/ichor_hg19"

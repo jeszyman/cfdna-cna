@@ -1,51 +1,19 @@
-#+begin_src python
-import pandas as pd
-
-samples = pd.read_table("samples.tsv").set_index("samples", drop = False)
-
-#+end_src
-#+begin_src fundamental :tangle ./test/wig/pon_wigs.txt
-/home/jeszyman/repos/cfdna-cna/test/wig/lib001_hg19_frag90_150.wig
-/home/jeszyman/repos/cfdna-cna/test/wig/lib002_hg19_frag90_150.wig
-#+end_src
-#+begin_src bash
-singularity shell ~/sing_containers/mpnst.sif
-
-Rscript /opt/ichorCNA/scripts/createPanelOfNormals.R \
-    --filelist ./test/wig/pon_wigs.txt \
-    --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
-    --mapWig /opt/ichorCNA/inst/extdata/map_hg19_1000kb.wig \
-    --centromere /opt/ichorCNA/inst/extdata/GRCh37.p13_centromere_UCSC-gapTable.txt \
-    --outfile base_outfile_nam
-
-mkdir -p /home/jeszyman/repos/cfdna-cna/tmp/testingPON
-
-Rscript /home/jeszyman/repos/cfdna-cna/workflow/scripts/MOD_runIchorCNA.R \
-        --id testing \
-        --WIG /home/jeszyman/repos/cfdna-cna/test/wig/lib001_hg19_frag90_150.wig \
-        --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
-        --normal "c(0.95, 0.99, 0.995, 0.999)" \
-        --ploidy "c(2)" \
-        --maxCN 3 \
-        --estimateScPrevalence FALSE \
-        --scStates "c()" \
-        --normalPanel base_outfile_nam_median.rds \
-        --outDir tmp/testingPON
-
-#+end_src    
-* cfDNA Copy Numer Alteration Analysis :biopipe:
+rewrite to separate hg19 / hg38 integrations
+* cfDNA Copy Numer Alteration Analysis                              :biopipe:
 :PROPERTIES:
 :logging: nil
 :header-args:bash: :tangle-mode (identity #o555)
 :END:
 ** Setup
-*** Snakemake
+*** Snakemake configuration YAML
 #+begin_src bash :tangle ./config/int_test.yaml
 container: "~/sing_containers/mpnst.sif"
 cfdna_cna_repo: "./"
-log_dir: "test/logs"
 threads: "4"
+#
+data_dir: "test"
 inputs_dir: "test/inputs"
+log_dir: "test/logs"
 frag_bam_dir: "test/frag-bam"
 wig_dir: "test/wig"
 ichor_hg19_dir: "test/ichor_hg19"
@@ -89,9 +57,9 @@ for file in test/inputs/*.bam; do samtools index $file; done
 #+begin_src snakemake
 rule frag_filt:
     input:
-        config["cna_bam_dir"] + "/{library_id}.bam"
+        config["data_dir"] + "/bam/{library_id}.bam"
     params:
-        out_dir = config["frag_bam_dir"]
+        out_dir = config["data_dir"] + "/frag_bam"
     output:
         nohead = temp(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.nohead"),
         onlyhead = temp(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.onlyhead"),
@@ -149,6 +117,67 @@ rule bam_to_wig:
  ~/repos/cfdna-cna/test/bam/lib004_hg38.bam > /tmp/test.wig
 
 #+end_src
+*** TODO Create panel of normals text file
+
+#+begin_src snakemake
+rule pon_txt:
+    input:  config["data_dir"] + "/wig/{library_id}_frag{frag_distro}.wig",
+    output: config["wig_dir"] + "{norm_panel_id}.
+    params:
+        chrs = "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX"
+    shell:
+        """
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20 \
+        --chromosome {params.chrs} \
+        {input} > {output}
+        """
+#+end_src
+
+#+begin_src bash
+data_dir="/home/jeszyman/repos/cfdna-cna/test"
+lib="lib001"
+
+if [ -f ${data_dir}/wig/hg19_normals.txt ]; then \rm ${data_dir}/wig/hg19_normals.txt; fi
+
+touch ${data_dir}/wig/hg19_normals.txt
+
+if [ -r ${data_dir}/wig/${lib}_frag90_150.wig ]; then
+    echo ${data_dir}/wig/${lib}_frag90_150.wig >> ${data_dir}/wig/hg19_normals.txt
+fi
+
+cat ${data_dir}/wig/hg19_normals.txt
+#+end_src
+*** TODO Create panel of normals
+#+begin_src fundamental
+/home/jeszyman/repos/cfdna-cna/test/wig/lib001_hg19_frag90_150.wig
+/home/jeszyman/repos/cfdna-cna/test/wig/lib002_hg19_frag90_150.wig
+#+end_src
+#+begin_src bash
+singularity shell ~/sing_containers/mpnst.sif
+
+Rscript /opt/ichorCNA/scripts/createPanelOfNormals.R \
+    --filelist ./test/wig/pon_wigs.txt \
+    --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
+    --mapWig /opt/ichorCNA/inst/extdata/map_hg19_1000kb.wig \
+    --centromere /opt/ichorCNA/inst/extdata/GRCh37.p13_centromere_UCSC-gapTable.txt \
+    --outfile base_outfile_nam
+
+mkdir -p /home/jeszyman/repos/cfdna-cna/tmp/testingPON
+
+Rscript /home/jeszyman/repos/cfdna-cna/workflow/scripts/MOD_runIchorCNA.R \
+        --id testing \
+        --WIG /home/jeszyman/repos/cfdna-cna/test/wig/lib001_hg19_frag90_150.wig \
+        --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
+        --normal "c(0.95, 0.99, 0.995, 0.999)" \
+        --ploidy "c(2)" \
+        --maxCN 3 \
+        --estimateScPrevalence FALSE \
+        --scStates "c()" \
+        --normalPanel base_outfile_nam_median.rds \
+        --outDir tmp/testingPON
+
+#+end_src    
+
 *** DONE Run hg19 ichor
 #+begin_src snakemake
 rule hg19_ichor:
@@ -285,19 +314,29 @@ basecamp/src/smk_run.sh config/repo_test.yaml workflow/cfdna_cna_int_test.smk
 basecamp/src/smk_forced_run.sh config/repo_test.yaml workflow/cfdna_cna_int_test.smk
 #+end_src
 #+begin_src snakemake :tangle ./workflow/int_test.smk
+import pandas as pd
+
 container: config["container"]
 
-HG19_IDS = ["lib001_hg19", "lib002_hg19"]
-HG38_IDS = ["lib003_hg38", "lib004_hg38"]
+hg19_inputs = pd.read_table("test/inputs/hg19_libraries.tsv").set_index("library", drop = False)
+hg38_inputs = pd.read_table("test/inputs/hg38_libraries.tsv").set_index("library", drop = False)
+
+HG19_LIBS = list(hg19_inputs.library.unique())
+HG19_LIBS_NORMAL = list(hg19_inputs.library[(hg19_inputs["cohort"] == "healthy")].unique())
+HG19_LIBS_NORMAL = list(hg19_inputs.library[(hg19_inputs["cohort"] == "mpnst")].unique())
+
+HG38_LIBS = list(hg38_inputs.library.unique())
+HG38_LIBS_NORMAL = list(hg38_inputs.library[(hg38_inputs["cohort"] == "healthy")].unique())
+HG38_LIBS_NORMAL = list(hg38_inputs.library[(hg38_inputs["cohort"] == "mpnst")].unique())
 
 rule all:
     input:
-        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = HG19_IDS, frag_distro = ["90_150"]),
-        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = HG38_IDS, frag_distro = ["90_150"]),
-        expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = HG19_IDS, frag_distro = ["90_150"]),
-        expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = HG38_IDS, frag_distro = ["90_150"]),
-        expand(config["ichor_hg19_dir"] + "/{library_id}_frag{frag_distro}.cna.seg", library_id = HG19_IDS, frag_distro = ["90_150"]),
-        expand(config["ichor_hg38_dir"] + "/{library_id}_frag{frag_distro}.cna.seg", library_id = HG38_IDS, frag_distro = ["90_150"]),
+        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = HG19_LIBS, frag_distro = ["90_150"]),
+        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = HG38_LIBS, frag_distro = ["90_150"]),
+        expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = HG19_LIBS, frag_distro = ["90_150"]),
+        expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = HG38_LIBS, frag_distro = ["90_150"]),
+        expand(config["ichor_hg19_dir"] + "/{library_id}_frag{frag_distro}.cna.seg", library_id = HG19_LIBS, frag_distro = ["90_150"]),
+        expand(config["ichor_hg38_dir"] + "/{library_id}_frag{frag_distro}.cna.seg", library_id = HG38_LIBS, frag_distro = ["90_150"]),
 
 include: "cfdna_wgs_cna.smk"
 #+end_src
