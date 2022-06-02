@@ -1,0 +1,20 @@
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/__init__.py", line 591, in snakemake
+    workflow.include(
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/workflow.py", line 1173, in include
+    exec(compile(code, snakefile, "exec"), self.globals)
+  File "/home/jeszyman/repos/cfdna-cna/workflow/int_test.smk", line 32, in <module>
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/workflow.py", line 1173, in include
+    exec(compile(code, snakefile, "exec"), self.globals)
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 12, in <module>
+    input:
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/workflow.py", line 1300, in rule
+    name = self.add_rule(
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/workflow.py", line 449, in add_rule
+    raise CreateRuleException(
+snakemake.exceptions.CreateRuleException: The name all is already used by another rule
+
+CreateRuleException in line 11 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+The name all is already used by another rule
+  File "/home/jeszyman/repos/cfdna-cna/workflow/int_test.smk", line 25, in <module>
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 11, in <module>

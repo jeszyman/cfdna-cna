@@ -2,6 +2,7 @@ container: "~/sing_containers/mpnst.sif"
 cfdna_cna_repo: "./"
 threads: "4"
 #
+cfdna_cna_scripts_dir: "workflow/scripts"
 data_dir: "test"
 inputs_dir: "test/inputs"
 log_dir: "test/logs"

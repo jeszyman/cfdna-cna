@@ -1,4 +1,9 @@
-rewrite to separate hg19 / hg38 integrations
+https://github.com/broadinstitute/ichorCNA/blob/master/scripts/snakemake/ichorCNA.snakefile
+#+begin_src bash
+test=("")
+
+
+#+end_src
 * cfDNA Copy Numer Alteration Analysis                              :biopipe:
 :PROPERTIES:
 :logging: nil
@@ -11,6 +16,7 @@ container: "~/sing_containers/mpnst.sif"
 cfdna_cna_repo: "./"
 threads: "4"
 #
+cfdna_cna_scripts_dir: "workflow/scripts"
 data_dir: "test"
 inputs_dir: "test/inputs"
 log_dir: "test/logs"
@@ -118,67 +124,32 @@ rule bam_to_wig:
 
 #+end_src
 *** TODO Create panel of normals text file
-
 #+begin_src snakemake
 rule pon_txt:
-    input:  config["data_dir"] + "/wig/{library_id}_frag{frag_distro}.wig",
-    output: config["wig_dir"] + "{norm_panel_id}.
-    params:
-        chrs = "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX"
+    input:  expand(config["data_dir"] + "/wig/{library_id}_frag{frag_distro}.wig", library_id = H),
+    output: config["data_dir"] + "/wig/normals.txt"
     shell:
         """
-        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20 \
-        --chromosome {params.chrs} \
-        {input} > {output}
+        {config[cfdna_cna_script_dir]}/pon_txt.sh \
+        {input} {output}
         """
 #+end_src
 
-#+begin_src bash
-data_dir="/home/jeszyman/repos/cfdna-cna/test"
-lib="lib001"
+#+begin_src bash :tangle ./workflow/scripts/pon_txt.sh
+input=$1
+output=$2
 
-if [ -f ${data_dir}/wig/hg19_normals.txt ]; then \rm ${data_dir}/wig/hg19_normals.txt; fi
+if [ -f $output ]; then \rm $output; fi
 
-touch ${data_dir}/wig/hg19_normals.txt
-
-if [ -r ${data_dir}/wig/${lib}_frag90_150.wig ]; then
-    echo ${data_dir}/wig/${lib}_frag90_150.wig >> ${data_dir}/wig/hg19_normals.txt
+if [ -r $input ];
+then echo $input >> $output
 fi
-
-cat ${data_dir}/wig/hg19_normals.txt
 #+end_src
-*** TODO Create panel of normals
-#+begin_src fundamental
-/home/jeszyman/repos/cfdna-cna/test/wig/lib001_hg19_frag90_150.wig
-/home/jeszyman/repos/cfdna-cna/test/wig/lib002_hg19_frag90_150.wig
-#+end_src
-#+begin_src bash
-singularity shell ~/sing_containers/mpnst.sif
-
-Rscript /opt/ichorCNA/scripts/createPanelOfNormals.R \
-    --filelist ./test/wig/pon_wigs.txt \
-    --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
-    --mapWig /opt/ichorCNA/inst/extdata/map_hg19_1000kb.wig \
-    --centromere /opt/ichorCNA/inst/extdata/GRCh37.p13_centromere_UCSC-gapTable.txt \
-    --outfile base_outfile_nam
-
-mkdir -p /home/jeszyman/repos/cfdna-cna/tmp/testingPON
-
-Rscript /home/jeszyman/repos/cfdna-cna/workflow/scripts/MOD_runIchorCNA.R \
-        --id testing \
-        --WIG /home/jeszyman/repos/cfdna-cna/test/wig/lib001_hg19_frag90_150.wig \
-        --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
-        --normal "c(0.95, 0.99, 0.995, 0.999)" \
-        --ploidy "c(2)" \
-        --maxCN 3 \
-        --estimateScPrevalence FALSE \
-        --scStates "c()" \
-        --normalPanel base_outfile_nam_median.rds \
-        --outDir tmp/testingPON
-
-#+end_src    
-
-*** DONE Run hg19 ichor
+*** Dev
+:PROPERTIES:
+:header-args:snakemake: :tangle no
+:END:
+**** DONE Run hg19 ichor
 #+begin_src snakemake
 rule hg19_ichor:
     input:
@@ -199,7 +170,7 @@ rule hg19_ichor:
          --outDir {config[ichor_hg19_dir]}
         """
 #+end_src
-*** DONE Run hg38 ichor
+**** DONE Run hg38 ichor
 #+begin_src snakemake
 rule hg38_ichor:
     input:
@@ -307,23 +278,65 @@ rule hg38_ichor:
   #                                                   HD_ULP_PoN_hg38_1Mb_median_normAutosome_median.rds
   #+end_src
 - Notes: Fails when extdata PoN specified
-** DONE Integration testing                                                :smk:
-#+begin_src bash :returns results
-basecamp/src/smk_dry_run.sh config/repo_test.yaml workflow/cfdna_cna_int_test.smk
-basecamp/src/smk_run.sh config/repo_test.yaml workflow/cfdna_cna_int_test.smk
-basecamp/src/smk_forced_run.sh config/repo_test.yaml workflow/cfdna_cna_int_test.smk
+**** TODO Create panel of normals
+#+begin_src fundamental
+/home/jeszyman/repos/cfdna-cna/test/wig/lib001_hg19_frag90_150.wig
+/home/jeszyman/repos/cfdna-cna/test/wig/lib002_hg19_frag90_150.wig
 #+end_src
-#+begin_src snakemake :tangle ./workflow/int_test.smk
+#+begin_src bash
+singularity shell ~/sing_containers/mpnst.sif
+
+Rscript /opt/ichorCNA/scripts/createPanelOfNormals.R \
+    --filelist ./test/wig/pon_wigs.txt \
+    --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
+    --mapWig /opt/ichorCNA/inst/extdata/map_hg19_1000kb.wig \
+    --centromere /opt/ichorCNA/inst/extdata/GRCh37.p13_centromere_UCSC-gapTable.txt \
+    --outfile base_outfile_nam
+
+mkdir -p /home/jeszyman/repos/cfdna-cna/tmp/testingPON
+
+Rscript /home/jeszyman/repos/cfdna-cna/workflow/scripts/MOD_runIchorCNA.R \
+        --id testing \
+        --WIG /home/jeszyman/repos/cfdna-cna/test/wig/lib001_hg19_frag90_150.wig \
+        --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
+        --normal "c(0.95, 0.99, 0.995, 0.999)" \
+        --ploidy "c(2)" \
+        --maxCN 3 \
+        --estimateScPrevalence FALSE \
+        --scStates "c()" \
+        --normalPanel base_outfile_nam_median.rds \
+        --outDir tmp/testingPON
+
+#+end_src
+
+** INPROCESS Integration testing
+- hg19 snakemake
+  #+begin_src snakemake :tangle ./workflow/int_test_hg19.smk
 import pandas as pd
 
 container: config["container"]
 
-hg19_inputs = pd.read_table("test/inputs/hg19_libraries.tsv").set_index("library", drop = False)
-hg38_inputs = pd.read_table("test/inputs/hg38_libraries.tsv").set_index("library", drop = False)
+libraries = pd.read_table("test/inputs/hg19_libraries.tsv").set_index("library", drop = False)
 
-HG19_LIBS = list(hg19_inputs.library.unique())
-HG19_LIBS_NORMAL = list(hg19_inputs.library[(hg19_inputs["cohort"] == "healthy")].unique())
-HG19_LIBS_NORMAL = list(hg19_inputs.library[(hg19_inputs["cohort"] == "mpnst")].unique())
+LIBRARY_IDS = list(libraries.library.unique())
+LIBRARY_IDS_NORMAL = list(libraries.library[(libraries["cohort"] == "healthy")].unique())
+LIBRARY_IDS_DISEASE = list(libraries.library[(libraries["cohort"] == "mpnst")].unique())
+
+rule all:
+    input:
+        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = LIBRARY_IDS, frag_distro = ["90_150"]),
+        expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = LIBRARY_IDS, frag_distro = ["90_150"]),
+        #expand(config["ichor_hg19_dir"] + "/{library_id}_frag{frag_distro}.cna.seg", library_id = LIBRARY_IDS, frag_distro = ["90_150"]),
+
+include: "cfdna_wgs_cna.smk"
+#+end_src
+- hg38 snakemake
+  #+begin_src snakemake :tangle ./workflow/int_test_hg39.smk
+import pandas as pd
+
+container: config["container"]
+
+hg38_inputs = pd.read_table("test/inputs/hg38_libraries.tsv").set_index("library", drop = False)
 
 HG38_LIBS = list(hg38_inputs.library.unique())
 HG38_LIBS_NORMAL = list(hg38_inputs.library[(hg38_inputs["cohort"] == "healthy")].unique())
@@ -331,16 +344,19 @@ HG38_LIBS_NORMAL = list(hg38_inputs.library[(hg38_inputs["cohort"] == "mpnst")].
 
 rule all:
     input:
-        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = HG19_LIBS, frag_distro = ["90_150"]),
         expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = HG38_LIBS, frag_distro = ["90_150"]),
-        expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = HG19_LIBS, frag_distro = ["90_150"]),
         expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = HG38_LIBS, frag_distro = ["90_150"]),
-        expand(config["ichor_hg19_dir"] + "/{library_id}_frag{frag_distro}.cna.seg", library_id = HG19_LIBS, frag_distro = ["90_150"]),
         expand(config["ichor_hg38_dir"] + "/{library_id}_frag{frag_distro}.cna.seg", library_id = HG38_LIBS, frag_distro = ["90_150"]),
 
 include: "cfdna_wgs_cna.smk"
 #+end_src
 
+
+#+begin_src bash :returns results
+basecamp/src/smk_dry_run.sh config/repo_test.yaml workflow/cfdna_cna_int_test.smk
+basecamp/src/smk_run.sh config/repo_test.yaml workflow/cfdna_cna_int_test.smk
+basecamp/src/smk_forced_run.sh config/repo_test.yaml workflow/cfdna_cna_int_test.smk
+#+end_src
 ** README
 *** Change Log
 - [2022-04-29 Fri]: First commit, copying from the old mpnst-cna repo. Untested.

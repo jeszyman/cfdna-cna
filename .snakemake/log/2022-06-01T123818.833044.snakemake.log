@@ -1,0 +1,56 @@
+Multiple includes of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk ignored
+Building DAG of jobs...
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/dag.py", line 1597, in collect_potential_dependencies
+    yield PotentialDependency(file, known_producers[file], True)
+KeyError: 'test/wig/normals.txt'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/__init__.py", line 699, in snakemake
+    success = workflow.execute(
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/workflow.py", line 763, in execute
+    dag.init()
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/dag.py", line 179, in init
+    job = self.update([job], progress=progress, create_inventory=True)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/dag.py", line 801, in update
+    raise exceptions[0]
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/dag.py", line 759, in update
+    self.update_(
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/dag.py", line 852, in update_
+    for res in potential_dependencies:
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/dag.py", line 1607, in collect_potential_dependencies
+    yield PotentialDependency(file, file2jobs(file), False)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/dag.py", line 1700, in file2jobs
+    raise exceptions[0]
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/dag.py", line 1695, in file2jobs
+    jobs.append(self.new_job(rule, targetfile=targetfile))
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/dag.py", line 1431, in new_job
+    job = self.job_factory.new(
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/jobs.py", line 109, in new
+    obj = Job(rule, dag, wildcards_dict, format_wildcards, targetfile)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/jobs.py", line 168, in __init__
+    self.input, input_mapping, self.dependencies = self.rule.expand_input(
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/rules.py", line 833, in expand_input
+    self._apply_wildcards(
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/rules.py", line 748, in _apply_wildcards
+    item, incomplete = self.apply_input_function(
+  File "/opt/miniconda3/envs/snakemake/lib/python3.10/site-packages/snakemake/rules.py", line 719, in apply_input_function
+    raise InputFunctionException(e, rule=self, wildcards=wildcards)
+snakemake.exceptions.InputFunctionException: Error:
+  TypeError: unhashable type: 'list'
+Wildcards:
+
+Traceback:
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 105, in normals
+
+InputFunctionException in line 107 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+Error:
+  TypeError: unhashable type: 'list'
+Wildcards:
+
+Traceback:
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 105, in normals
+unlocking
+removed all locks

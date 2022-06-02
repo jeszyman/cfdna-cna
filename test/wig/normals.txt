@@ -1,0 +1,3 @@
+/home/jeszyman/repos/cfdna-cna/test/wig/lib001_frag90_150.wig
+/home/jeszyman/repos/cfdna-cna/test/wig/lib002_frag90_150.wig
+/home/jeszyman/repos/cfdna-cna/test/wig/lib003_frag90_150.wig

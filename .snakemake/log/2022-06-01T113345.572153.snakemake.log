@@ -1,0 +1,941 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job           count    min threads    max threads
+----------  -------  -------------  -------------
+all               1              1              1
+bam_to_wig       10              1              1
+frag_filt        10              1              1
+hg19_ichor        6              1              1
+hg38_ichor        4              1              1
+total            31              1              1
+
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (10):
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+Select jobs to execute...
+Selected jobs (4):
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:46 2022]
+rule frag_filt:
+    input: test/bam/lib001.bam
+    output: test/frag-bam/lib001_frag90_150.nohead, test/frag-bam/lib001_frag90_150.onlyhead, test/frag-bam/lib001_frag90_150.bam
+    jobid: 1
+    wildcards: library_id=lib001, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib001.bam                                       test/frag-bam/lib001_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib001_frag90_150.onlyhead                                       test/frag-bam/lib001_frag90_150.bam
+        
+
+[Wed Jun  1 11:33:46 2022]
+rule frag_filt:
+    input: test/bam/lib003.bam
+    output: test/frag-bam/lib003_frag90_150.nohead, test/frag-bam/lib003_frag90_150.onlyhead, test/frag-bam/lib003_frag90_150.bam
+    jobid: 3
+    wildcards: library_id=lib003, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib001.bam                                       test/frag-bam/lib001_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib001_frag90_150.onlyhead                                       test/frag-bam/lib001_frag90_150.bam'
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib003.bam                                       test/frag-bam/lib003_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib003_frag90_150.onlyhead                                       test/frag-bam/lib003_frag90_150.bam
+        
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib003.bam                                       test/frag-bam/lib003_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib003_frag90_150.onlyhead                                       test/frag-bam/lib003_frag90_150.bam'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+
+[Wed Jun  1 11:33:46 2022]
+rule frag_filt:
+    input: test/bam/lib005.bam
+    output: test/frag-bam/lib005_frag90_150.nohead, test/frag-bam/lib005_frag90_150.onlyhead, test/frag-bam/lib005_frag90_150.bam
+    jobid: 5
+    wildcards: library_id=lib005, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib005.bam                                       test/frag-bam/lib005_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib005_frag90_150.onlyhead                                       test/frag-bam/lib005_frag90_150.bam
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib005.bam                                       test/frag-bam/lib005_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib005_frag90_150.onlyhead                                       test/frag-bam/lib005_frag90_150.bam'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+
+[Wed Jun  1 11:33:46 2022]
+rule frag_filt:
+    input: test/bam/lib007.bam
+    output: test/frag-bam/lib007_frag90_150.nohead, test/frag-bam/lib007_frag90_150.onlyhead, test/frag-bam/lib007_frag90_150.bam
+    jobid: 7
+    wildcards: library_id=lib007, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib007.bam                                       test/frag-bam/lib007_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib007_frag90_150.onlyhead                                       test/frag-bam/lib007_frag90_150.bam
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib007.bam                                       test/frag-bam/lib007_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib007_frag90_150.onlyhead                                       test/frag-bam/lib007_frag90_150.bam'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib007_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib007_frag90_150.onlyhead.
+[Wed Jun  1 11:33:47 2022]
+Finished job 7.
+1 of 31 steps (3%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+Select jobs to execute...
+Selected jobs (1):
+	frag_filt
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:47 2022]
+rule frag_filt:
+    input: test/bam/lib004.bam
+    output: test/frag-bam/lib004_frag90_150.nohead, test/frag-bam/lib004_frag90_150.onlyhead, test/frag-bam/lib004_frag90_150.bam
+    jobid: 4
+    wildcards: library_id=lib004, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib004.bam                                       test/frag-bam/lib004_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib004_frag90_150.onlyhead                                       test/frag-bam/lib004_frag90_150.bam
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib004.bam                                       test/frag-bam/lib004_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib004_frag90_150.onlyhead                                       test/frag-bam/lib004_frag90_150.bam'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib003_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib003_frag90_150.onlyhead.
+[Wed Jun  1 11:33:47 2022]
+Finished job 3.
+2 of 31 steps (6%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+Select jobs to execute...
+Selected jobs (1):
+	frag_filt
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:47 2022]
+rule frag_filt:
+    input: test/bam/lib010.bam
+    output: test/frag-bam/lib010_frag90_150.nohead, test/frag-bam/lib010_frag90_150.onlyhead, test/frag-bam/lib010_frag90_150.bam
+    jobid: 10
+    wildcards: library_id=lib010, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib010.bam                                       test/frag-bam/lib010_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib010_frag90_150.onlyhead                                       test/frag-bam/lib010_frag90_150.bam
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib010.bam                                       test/frag-bam/lib010_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib010_frag90_150.onlyhead                                       test/frag-bam/lib010_frag90_150.bam'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib001_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib001_frag90_150.onlyhead.
+[Wed Jun  1 11:33:47 2022]
+Finished job 1.
+3 of 31 steps (10%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	frag_filt
+	frag_filt
+Select jobs to execute...
+Selected jobs (1):
+	frag_filt
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:47 2022]
+rule frag_filt:
+    input: test/bam/lib002.bam
+    output: test/frag-bam/lib002_frag90_150.nohead, test/frag-bam/lib002_frag90_150.onlyhead, test/frag-bam/lib002_frag90_150.bam
+    jobid: 2
+    wildcards: library_id=lib002, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib002.bam                                       test/frag-bam/lib002_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib002_frag90_150.onlyhead                                       test/frag-bam/lib002_frag90_150.bam
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib002.bam                                       test/frag-bam/lib002_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib002_frag90_150.onlyhead                                       test/frag-bam/lib002_frag90_150.bam'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib005_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib005_frag90_150.onlyhead.
+[Wed Jun  1 11:33:48 2022]
+Finished job 5.
+4 of 31 steps (13%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	frag_filt
+Select jobs to execute...
+Selected jobs (1):
+	frag_filt
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:48 2022]
+rule frag_filt:
+    input: test/bam/lib008.bam
+    output: test/frag-bam/lib008_frag90_150.nohead, test/frag-bam/lib008_frag90_150.onlyhead, test/frag-bam/lib008_frag90_150.bam
+    jobid: 8
+    wildcards: library_id=lib008, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib008.bam                                       test/frag-bam/lib008_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib008_frag90_150.onlyhead                                       test/frag-bam/lib008_frag90_150.bam
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib008.bam                                       test/frag-bam/lib008_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib008_frag90_150.onlyhead                                       test/frag-bam/lib008_frag90_150.bam'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib004_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib004_frag90_150.onlyhead.
+[Wed Jun  1 11:33:48 2022]
+Finished job 4.
+5 of 31 steps (16%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (1):
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:48 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib004_frag90_150.bam
+    output: test/wig/lib004_frag90_150.wig
+    jobid: 14
+    wildcards: library_id=lib004, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib004_frag90_150.bam > test/wig/lib004_frag90_150.wig
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib004_frag90_150.bam > test/wig/lib004_frag90_150.wig'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib010_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib010_frag90_150.onlyhead.
+[Wed Jun  1 11:33:48 2022]
+Finished job 10.
+6 of 31 steps (19%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (1):
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:48 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib010_frag90_150.bam
+    output: test/wig/lib010_frag90_150.wig
+    jobid: 20
+    wildcards: library_id=lib010, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib010_frag90_150.bam > test/wig/lib010_frag90_150.wig
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib010_frag90_150.bam > test/wig/lib010_frag90_150.wig'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:33:49 2022]
+Finished job 14.
+7 of 31 steps (23%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	hg19_ichor
+Select jobs to execute...
+Selected jobs (1):
+	hg19_ichor
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:49 2022]
+rule hg19_ichor:
+    input: test/wig/lib004_frag90_150.wig
+    output: test/ichor_hg19/lib004_frag90_150.cna.seg
+    jobid: 24
+    wildcards: library_id=lib004, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib004_frag90_150          --WIG test/wig/lib004_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib004_frag90_150          --WIG test/wig/lib004_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:33:49 2022]
+Finished job 20.
+8 of 31 steps (26%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	hg38_ichor
+Select jobs to execute...
+Selected jobs (1):
+	hg38_ichor
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:49 2022]
+rule hg38_ichor:
+    input: test/wig/lib010_frag90_150.wig
+    output: test/ichor_hg38/lib010_frag90_150.cna.seg
+    jobid: 30
+    wildcards: library_id=lib010, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib010_frag90_150          --WIG test/wig/lib010_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg38
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib010_frag90_150          --WIG test/wig/lib010_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg38'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib002_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib002_frag90_150.onlyhead.
+[Wed Jun  1 11:33:49 2022]
+Finished job 2.
+9 of 31 steps (29%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (1):
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:49 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib002_frag90_150.bam
+    output: test/wig/lib002_frag90_150.wig
+    jobid: 12
+    wildcards: library_id=lib002, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib002_frag90_150.bam > test/wig/lib002_frag90_150.wig
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib002_frag90_150.bam > test/wig/lib002_frag90_150.wig'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib008_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib008_frag90_150.onlyhead.
+[Wed Jun  1 11:33:49 2022]
+Finished job 8.
+10 of 31 steps (32%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (1):
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:49 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib008_frag90_150.bam
+    output: test/wig/lib008_frag90_150.wig
+    jobid: 18
+    wildcards: library_id=lib008, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib008_frag90_150.bam > test/wig/lib008_frag90_150.wig
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib008_frag90_150.bam > test/wig/lib008_frag90_150.wig'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:33:50 2022]
+Finished job 18.
+11 of 31 steps (35%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	hg38_ichor
+Select jobs to execute...
+Selected jobs (1):
+	hg38_ichor
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:50 2022]
+rule hg38_ichor:
+    input: test/wig/lib008_frag90_150.wig
+    output: test/ichor_hg38/lib008_frag90_150.cna.seg
+    jobid: 28
+    wildcards: library_id=lib008, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib008_frag90_150          --WIG test/wig/lib008_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg38
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib008_frag90_150          --WIG test/wig/lib008_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg38'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:33:50 2022]
+Finished job 12.
+12 of 31 steps (39%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (7):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+	hg19_ichor
+Select jobs to execute...
+Selected jobs (1):
+	hg19_ichor
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:33:50 2022]
+rule hg19_ichor:
+    input: test/wig/lib002_frag90_150.wig
+    output: test/ichor_hg19/lib002_frag90_150.cna.seg
+    jobid: 22
+    wildcards: library_id=lib002, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib002_frag90_150          --WIG test/wig/lib002_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib002_frag90_150          --WIG test/wig/lib002_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:04 2022]
+Finished job 22.
+13 of 31 steps (42%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (6):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+	frag_filt
+Select jobs to execute...
+Selected jobs (1):
+	frag_filt
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:04 2022]
+rule frag_filt:
+    input: test/bam/lib006.bam
+    output: test/frag-bam/lib006_frag90_150.nohead, test/frag-bam/lib006_frag90_150.onlyhead, test/frag-bam/lib006_frag90_150.bam
+    jobid: 6
+    wildcards: library_id=lib006, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib006.bam                                       test/frag-bam/lib006_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib006_frag90_150.onlyhead                                       test/frag-bam/lib006_frag90_150.bam
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib006.bam                                       test/frag-bam/lib006_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib006_frag90_150.onlyhead                                       test/frag-bam/lib006_frag90_150.bam'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:04 2022]
+Finished job 30.
+14 of 31 steps (45%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (5):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	frag_filt
+Select jobs to execute...
+Selected jobs (1):
+	frag_filt
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:04 2022]
+rule frag_filt:
+    input: test/bam/lib009.bam
+    output: test/frag-bam/lib009_frag90_150.nohead, test/frag-bam/lib009_frag90_150.onlyhead, test/frag-bam/lib009_frag90_150.bam
+    jobid: 9
+    wildcards: library_id=lib009, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib009.bam                                       test/frag-bam/lib009_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib009_frag90_150.onlyhead                                       test/frag-bam/lib009_frag90_150.bam
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        frag_min=$(echo 90_150 | sed -e "s/_.*$//g")
+        frag_max=$(echo 90_150 | sed -e "s/^.*_//g")
+        .//workflow/scripts/frag_filt.sh test/bam/lib009.bam                                       test/frag-bam/lib009_frag90_150.nohead                                       $frag_min                                       $frag_max                                       4                                       test/frag-bam/lib009_frag90_150.onlyhead                                       test/frag-bam/lib009_frag90_150.bam'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:05 2022]
+Finished job 24.
+15 of 31 steps (48%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (4):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (1):
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:05 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib005_frag90_150.bam
+    output: test/wig/lib005_frag90_150.wig
+    jobid: 15
+    wildcards: library_id=lib005, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib005_frag90_150.bam > test/wig/lib005_frag90_150.wig
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib005_frag90_150.bam > test/wig/lib005_frag90_150.wig'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:05 2022]
+Finished job 28.
+16 of 31 steps (52%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (3):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (1):
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:05 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib001_frag90_150.bam
+    output: test/wig/lib001_frag90_150.wig
+    jobid: 11
+    wildcards: library_id=lib001, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib001_frag90_150.bam > test/wig/lib001_frag90_150.wig
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib001_frag90_150.bam > test/wig/lib001_frag90_150.wig'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib009_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib009_frag90_150.onlyhead.
+[Wed Jun  1 11:34:05 2022]
+Finished job 9.
+17 of 31 steps (55%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (3):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (1):
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:05 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib009_frag90_150.bam
+    output: test/wig/lib009_frag90_150.wig
+    jobid: 19
+    wildcards: library_id=lib009, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib009_frag90_150.bam > test/wig/lib009_frag90_150.wig
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib009_frag90_150.bam > test/wig/lib009_frag90_150.wig'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:06 2022]
+Finished job 19.
+18 of 31 steps (58%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (3):
+	hg38_ichor
+	bam_to_wig
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (1):
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:06 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib003_frag90_150.bam
+    output: test/wig/lib003_frag90_150.wig
+    jobid: 13
+    wildcards: library_id=lib003, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib003_frag90_150.bam > test/wig/lib003_frag90_150.wig
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib003_frag90_150.bam > test/wig/lib003_frag90_150.wig'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+Removing temporary output file test/frag-bam/lib006_frag90_150.nohead.
+Removing temporary output file test/frag-bam/lib006_frag90_150.onlyhead.
+[Wed Jun  1 11:34:06 2022]
+Finished job 6.
+19 of 31 steps (61%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (3):
+	hg38_ichor
+	bam_to_wig
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (1):
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:06 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib006_frag90_150.bam
+    output: test/wig/lib006_frag90_150.wig
+    jobid: 16
+    wildcards: library_id=lib006, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib006_frag90_150.bam > test/wig/lib006_frag90_150.wig
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib006_frag90_150.bam > test/wig/lib006_frag90_150.wig'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:06 2022]
+Finished job 15.
+20 of 31 steps (65%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (3):
+	hg38_ichor
+	bam_to_wig
+	hg19_ichor
+Select jobs to execute...
+Selected jobs (1):
+	hg19_ichor
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:06 2022]
+rule hg19_ichor:
+    input: test/wig/lib005_frag90_150.wig
+    output: test/ichor_hg19/lib005_frag90_150.cna.seg
+    jobid: 25
+    wildcards: library_id=lib005, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib005_frag90_150          --WIG test/wig/lib005_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib005_frag90_150          --WIG test/wig/lib005_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:06 2022]
+Finished job 11.
+21 of 31 steps (68%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (3):
+	hg38_ichor
+	bam_to_wig
+	hg19_ichor
+Select jobs to execute...
+Selected jobs (1):
+	hg19_ichor
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:06 2022]
+rule hg19_ichor:
+    input: test/wig/lib001_frag90_150.wig
+    output: test/ichor_hg19/lib001_frag90_150.cna.seg
+    jobid: 21
+    wildcards: library_id=lib001, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib001_frag90_150          --WIG test/wig/lib001_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib001_frag90_150          --WIG test/wig/lib001_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:06 2022]
+Finished job 13.
+22 of 31 steps (71%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (3):
+	hg38_ichor
+	bam_to_wig
+	hg19_ichor
+Select jobs to execute...
+Selected jobs (1):
+	hg19_ichor
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:06 2022]
+rule hg19_ichor:
+    input: test/wig/lib003_frag90_150.wig
+    output: test/ichor_hg19/lib003_frag90_150.cna.seg
+    jobid: 23
+    wildcards: library_id=lib003, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib003_frag90_150          --WIG test/wig/lib003_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib003_frag90_150          --WIG test/wig/lib003_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:06 2022]
+Finished job 16.
+23 of 31 steps (74%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (3):
+	hg38_ichor
+	bam_to_wig
+	hg19_ichor
+Select jobs to execute...
+Selected jobs (1):
+	hg19_ichor
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:06 2022]
+rule hg19_ichor:
+    input: test/wig/lib006_frag90_150.wig
+    output: test/ichor_hg19/lib006_frag90_150.cna.seg
+    jobid: 26
+    wildcards: library_id=lib006, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib006_frag90_150          --WIG test/wig/lib006_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib006_frag90_150          --WIG test/wig/lib006_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg19'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:20 2022]
+Finished job 23.
+24 of 31 steps (77%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (2):
+	hg38_ichor
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (1):
+	hg38_ichor
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:20 2022]
+rule hg38_ichor:
+    input: test/wig/lib009_frag90_150.wig
+    output: test/ichor_hg38/lib009_frag90_150.cna.seg
+    jobid: 29
+    wildcards: library_id=lib009, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib009_frag90_150          --WIG test/wig/lib009_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg38
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib009_frag90_150          --WIG test/wig/lib009_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg38'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:22 2022]
+Finished job 25.
+25 of 31 steps (81%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (1):
+	bam_to_wig
+Select jobs to execute...
+Using greedy selector because only single job has to be scheduled.
+Selected jobs (1):
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:22 2022]
+rule bam_to_wig:
+    input: test/frag-bam/lib007_frag90_150.bam
+    output: test/wig/lib007_frag90_150.wig
+    jobid: 17
+    wildcards: library_id=lib007, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib007_frag90_150.bam > test/wig/lib007_frag90_150.wig
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         test/frag-bam/lib007_frag90_150.bam > test/wig/lib007_frag90_150.wig'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:22 2022]
+Finished job 17.
+26 of 31 steps (84%) done
+Resources before job selection: {'_cores': 1, '_nodes': 9223372036854775804}
+Ready jobs (1):
+	hg38_ichor
+Select jobs to execute...
+Using greedy selector because only single job has to be scheduled.
+Selected jobs (1):
+	hg38_ichor
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Wed Jun  1 11:34:22 2022]
+rule hg38_ichor:
+    input: test/wig/lib007_frag90_150.wig
+    output: test/ichor_hg38/lib007_frag90_150.cna.seg
+    jobid: 27
+    wildcards: library_id=lib007, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib007_frag90_150          --WIG test/wig/lib007_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg38
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt /home/jeszyman/sing_containers/mpnst.sif bash -c 'set -euo pipefail;  
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib007_frag90_150          --WIG test/wig/lib007_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_hg38'
+Activating singularity image /home/jeszyman/sing_containers/mpnst.sif
+[Wed Jun  1 11:34:23 2022]
+Finished job 26.
+27 of 31 steps (87%) done
+[Wed Jun  1 11:34:23 2022]
+Finished job 21.
+28 of 31 steps (90%) done
+[Wed Jun  1 11:34:33 2022]
+Finished job 29.
+29 of 31 steps (94%) done
+[Wed Jun  1 11:34:36 2022]
+Finished job 27.
+30 of 31 steps (97%) done
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (1):
+	all
+Select jobs to execute...
+Using greedy selector because only single job has to be scheduled.
+Selected jobs (1):
+	all
+Resources after job selection: {'_cores': 3, '_nodes': 9223372036854775806}
+
+[Wed Jun  1 11:34:36 2022]
+localrule all:
+    input: test/frag-bam/lib001_frag90_150.bam, test/frag-bam/lib002_frag90_150.bam, test/frag-bam/lib003_frag90_150.bam, test/frag-bam/lib004_frag90_150.bam, test/frag-bam/lib005_frag90_150.bam, test/frag-bam/lib006_frag90_150.bam, test/frag-bam/lib007_frag90_150.bam, test/frag-bam/lib008_frag90_150.bam, test/frag-bam/lib009_frag90_150.bam, test/frag-bam/lib010_frag90_150.bam, test/wig/lib001_frag90_150.wig, test/wig/lib002_frag90_150.wig, test/wig/lib003_frag90_150.wig, test/wig/lib004_frag90_150.wig, test/wig/lib005_frag90_150.wig, test/wig/lib006_frag90_150.wig, test/wig/lib007_frag90_150.wig, test/wig/lib008_frag90_150.wig, test/wig/lib009_frag90_150.wig, test/wig/lib010_frag90_150.wig, test/ichor_hg19/lib001_frag90_150.cna.seg, test/ichor_hg19/lib002_frag90_150.cna.seg, test/ichor_hg19/lib003_frag90_150.cna.seg, test/ichor_hg19/lib004_frag90_150.cna.seg, test/ichor_hg19/lib005_frag90_150.cna.seg, test/ichor_hg19/lib006_frag90_150.cna.seg, test/ichor_hg38/lib007_frag90_150.cna.seg, test/ichor_hg38/lib008_frag90_150.cna.seg, test/ichor_hg38/lib009_frag90_150.cna.seg, test/ichor_hg38/lib010_frag90_150.cna.seg
+    jobid: 0
+    resources: tmpdir=/tmp
+
+[Wed Jun  1 11:34:36 2022]
+Finished job 0.
+31 of 31 steps (100%) done
+Complete log: /home/jeszyman/repos/cfdna-cna/.snakemake/log/2022-06-01T113345.572153.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks

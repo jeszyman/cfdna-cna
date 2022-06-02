@@ -32,42 +32,11 @@ rule bam_to_wig:
         {input} > {output}
         """
 
-rule hg19_ichor:
-    input:
-        config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig",
-    output:
-        config["ichor_hg19_dir"] + "/{library_id}_frag{frag_distro}.cna.seg",
+rule pon_txt:
+    input:  expand(config["data_dir"] + "/wig/{library_id}_frag{frag_distro}.wig", library_id = H),
+    output: config["data_dir"] + "/wig/normals.txt"
     shell:
         """
-        Rscript {config[cfdna_cna_repo]}/workflow/scripts/MOD_runIchorCNA.R \
-         --id {wildcards.library_id}_frag{wildcards.frag_distro} \
-         --WIG {input} \
-         --gcWig /opt/ichorCNA/inst/extdata/gc_hg19_1000kb.wig \
-         --normal "c(0.95, 0.99, 0.995, 0.999)" \
-         --ploidy "c(2)" \
-         --maxCN 3 \
-         --estimateScPrevalence FALSE \
-         --scStates "c()" \
-         --outDir {config[ichor_hg19_dir]}
-        """
-
-rule hg38_ichor:
-    input:
-        config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig",
-    output:
-        config["ichor_hg38_dir"] + "/{library_id}_frag{frag_distro}.cna.seg",
-    shell:
-        """
-        Rscript {config[cfdna_cna_repo]}/workflow/scripts/MOD_runIchorCNA.R \
-         --id {wildcards.library_id}_frag{wildcards.frag_distro} \
-         --WIG {input} \
-         --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig \
-         --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig \
-         --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt \
-         --normal "c(0.95, 0.99, 0.995, 0.999)" \
-         --ploidy "c(2)" \
-         --maxCN 3 \
-         --estimateScPrevalence FALSE \
-         --scStates "c()" \
-         --outDir {config[ichor_hg38_dir]}
+        {config[cfdna_cna_script_dir]}/pon_txt.sh \
+        {input} {output}
         """
