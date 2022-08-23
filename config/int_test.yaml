@@ -1,10 +1,11 @@
-container: "~/sing_containers/mpnst.sif"
-cfdna_cna_repo: "./"
-log_dir: "test/logs"
-threads: "4"
-inputs_dir: "test/inputs"
-frag_bam_dir: "test/frag-bam"
-wig_dir: "test/wig"
-ichor_hg19_dir: "test/ichor_hg19"
-ichor_hg38_dir: "test/ichor_hg38"
-cna_bam_dir: "test/bam"
+container:
+  cfdna_wgs: "~/sing_containers/cfdna_wgs.1.0.0.sif"
+  default: "~/sing_containers/biotools.1.0.2.sif"
+
+dir:
+  cfdna_wgs_repo: "./"
+  cfdna_wgs_scripts: "workflow/scripts"
+  data: "test"
+
+threads:
+    default: "4"

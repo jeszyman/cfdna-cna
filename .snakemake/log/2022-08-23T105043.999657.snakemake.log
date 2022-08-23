@@ -1,0 +1,59 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job      count    min threads    max threads
+-----  -------  -------------  -------------
+all          1              1              1
+pon          1              1              1
+total        2              1              1
+
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (1):
+	pon
+Select jobs to execute...
+Selected jobs (1):
+	pon
+Resources after job selection: {'_cores': 3, '_nodes': 9223372036854775806}
+
+[Tue Aug 23 10:50:44 2022]
+rule pon:
+    input: test/wig/lib003_frag90_150.wig, test/wig/lib004_frag90_150.wig
+    output: test/wig/normal.txt
+    log: testlogs/cfdna_wgs/pon.log
+    jobid: 9
+    resources: tmpdir=/tmp
+
+
+        if [ -f test/wig/normal.txt ]; then rm test/wig/normal.txt; fi
+        echo -e "test/wig/lib003_frag90_150.wig test/wig/lib004_frag90_150.wig" >> test/wig/normal.txt
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt --bind /opt/miniconda3/envs/snakemake/lib/python3.9/site-packages:/mnt/snakemake /home/jeszyman/sing_containers/cfdna_wgs.1.0.0.sif bash -c 'if [ -f test/wig/normal.txt ]; then rm test/wig/normal.txt; fi
+        echo -e "test/wig/lib003_frag90_150.wig test/wig/lib004_frag90_150.wig" >> test/wig/normal.txt'
+Activating singularity image /home/jeszyman/sing_containers/cfdna_wgs.1.0.0.sif
+[Tue Aug 23 10:50:44 2022]
+Finished job 9.
+1 of 2 steps (50%) done
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (1):
+	all
+Select jobs to execute...
+Selected jobs (1):
+	all
+Resources after job selection: {'_cores': 3, '_nodes': 9223372036854775806}
+
+[Tue Aug 23 10:50:44 2022]
+localrule all:
+    input: /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib003_frag90_150.bam, /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib004_frag90_150.bam, /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib005_frag90_150.bam, /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib006_frag90_150.bam, test/wig/lib003_frag90_150.wig, test/wig/lib004_frag90_150.wig, test/wig/lib005_frag90_150.wig, test/wig/lib006_frag90_150.wig, test/wig/normal.txt, test/ichor/lib003_frag90_150.cna.seg, test/ichor/lib004_frag90_150.cna.seg, test/ichor/lib005_frag90_150.cna.seg, test/ichor/lib006_frag90_150.cna.seg
+    jobid: 0
+    resources: tmpdir=/tmp
+
+[Tue Aug 23 10:50:44 2022]
+Finished job 0.
+2 of 2 steps (100%) done
+Complete log: /home/jeszyman/repos/cfdna-cna/.snakemake/log/2022-08-23T105043.999657.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks

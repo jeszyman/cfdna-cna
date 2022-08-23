@@ -1,15 +1,33 @@
-container: config["container"]
+#container: config["container"]
 
-HG19_IDS = ["lib001_hg19", "lib002_hg19"]
-HG38_IDS = ["lib003_hg38", "lib004_hg38"]
+LIBRARIES = ["lib003",
+	     "lib004",
+	     "lib005",
+	     "lib006"]
+
+NORMAL_LIBRARIES = ["lib003", "lib004"]
+
+cfdna_wgs_container = config["container"]["cfdna_wgs"]
+cfdna_wgs_scripts = config["dir"]["cfdna_wgs_repo"] + "/workflow/scripts"
+
+cfdna_wgs_cna_bam_inputs   = config["dir"]["data"] + "/bam/filt"
+cfdna_wgs_cna_bam_fragfilt = config["dir"]["data"] + "/bam/frag"
+
+wig = config["dir"]["data"] + "/wig"
+ichor = config["dir"]["data"] + "/ichor"
+cfdna_wgs_logs = config["dir"]["data"] + "logs/cfdna_wgs"
 
 rule all:
     input:
-        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = HG19_IDS, frag_distro = ["90_150"]),
-        expand(config["frag_bam_dir"] + "/{library_id}_frag{frag_distro}.bam", library_id = HG38_IDS, frag_distro = ["90_150"]),
-        expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = HG19_IDS, frag_distro = ["90_150"]),
-        expand(config["wig_dir"] + "/{library_id}_frag{frag_distro}.wig", library_id = HG38_IDS, frag_distro = ["90_150"]),
-        expand(config["ichor_hg19_dir"] + "/{library_id}_frag{frag_distro}.cna.seg", library_id = HG19_IDS, frag_distro = ["90_150"]),
-        expand(config["ichor_hg38_dir"] + "/{library_id}_frag{frag_distro}.cna.seg", library_id = HG38_IDS, frag_distro = ["90_150"]),
+	# Fragment-filtered bam
+        #expand(cfdna_wgs_cna_bam_fragfilt + "/{library}_frag{frag_distro}.bam", library = LIBRARIES, frag_distro = ["90_150"]),
+	# Wiggle
+        #expand(wig + "/{library}_frag{frag_distro}.wig", library = LIBRARIES, frag_distro = ["90_150"]),
+        # PoN list
+        #wig + "/normal.txt",
+        # PoN
+        #wig + "/pon_median.rds",
+	# Ichor
+        expand(ichor + "/{library}_frag{frag_distro}.cna.seg", library = LIBRARIES, frag_distro = ["90_150"]),
 
 include: "cfdna_wgs_cna.smk"

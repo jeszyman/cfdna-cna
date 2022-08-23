@@ -1,0 +1,259 @@
+Loading required package: data.table
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:data.table’:
+
+    first, second
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+
+Attaching package: ‘IRanges’
+
+The following object is masked from ‘package:data.table’:
+
+    shift
+
+Loading required package: GenomeInfoDb
+
+Attaching package: ‘ichorCNA’
+
+The following object is masked from ‘package:HMMcopy’:
+
+    HMMsegment
+
+$gcWig
+[1] "/opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig"
+
+$mapWig
+[1] "/opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig"
+
+$filelist
+[1] "test/wig/normal.txt"
+
+$outfile
+[1] "test/wig/pon"
+
+$centromere
+[1] "/opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt"
+
+$chrs
+[1] "paste0('chr', c(1:22, \"X\"))"
+
+$genomeStyle
+[1] "NCBI"
+
+$chrNormalize
+[1] "c(1:22, \"X\")"
+
+$maleChrXLogRThres
+[1] -0.8
+
+$method
+[1] "median"
+
+$help
+[1] FALSE
+
+Loading normal file:test/wig/lib003_frag90_150.wig
+Slurping: test/wig/lib003_frag90_150.wig
+Parsing: fixedStep chrom=chr1 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr2 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr3 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr4 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr5 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr6 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr7 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr8 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr9 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr10 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr11 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr12 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr13 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr14 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr15 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr16 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr17 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr18 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr19 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr20 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr21 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr22 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrX start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrY start=1 step=1000000 span=1000000
+Sorting by decreasing chromosome size
+Reading GC and mappability files
+Slurping: /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig
+Parsing: fixedStep chrom=chr1 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr2 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr3 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr4 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr5 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr6 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr7 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr8 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr9 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr10 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr11 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr12 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr13 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr14 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr15 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr16 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr17 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr18 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr19 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr20 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr21 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr22 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrX start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrY start=1 step=1000000 span=1000000
+Sorting by decreasing chromosome size
+Slurping: /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig
+Parsing: fixedStep chrom=chr1 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr2 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr3 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr4 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr5 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr6 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr7 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr8 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr9 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr10 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr11 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr12 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr13 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr14 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr15 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr16 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr17 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr18 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr19 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr20 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr21 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr22 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrX start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrY start=1 step=1000000 span=1000000
+Sorting by decreasing chromosome size
+Removed 121 bins near centromeres.
+Applying filter on data...
+Correcting for GC bias...
+Correcting for mappability bias...
+Filtering low uniqueness regions with mappability score < 0.9
+Removed 1 bins near centromeres.
+Correcting lib003_frag90_150
+Loading normal file:test/wig/lib004_frag90_150.wig
+Slurping: test/wig/lib004_frag90_150.wig
+Parsing: fixedStep chrom=chr1 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr2 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr3 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr4 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr5 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr6 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr7 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr8 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr9 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr10 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr11 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr12 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr13 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr14 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr15 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr16 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr17 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr18 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr19 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr20 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr21 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr22 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrX start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrY start=1 step=1000000 span=1000000
+Sorting by decreasing chromosome size
+Reading GC and mappability files
+Slurping: /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig
+Parsing: fixedStep chrom=chr1 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr2 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr3 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr4 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr5 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr6 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr7 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr8 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr9 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr10 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr11 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr12 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr13 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr14 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr15 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr16 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr17 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr18 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr19 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr20 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr21 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr22 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrX start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrY start=1 step=1000000 span=1000000
+Sorting by decreasing chromosome size
+Slurping: /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig
+Parsing: fixedStep chrom=chr1 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr2 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr3 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr4 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr5 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr6 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr7 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr8 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr9 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr10 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr11 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr12 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr13 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr14 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr15 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr16 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr17 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr18 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr19 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr20 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr21 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chr22 start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrX start=1 step=1000000 span=1000000
+Parsing: fixedStep chrom=chrY start=1 step=1000000 span=1000000
+Sorting by decreasing chromosome size
+Removed 121 bins near centromeres.
+Applying filter on data...
+Correcting for GC bias...
+Correcting for mappability bias...
+Filtering low uniqueness regions with mappability score < 0.9
+Removed 1 bins near centromeres.
+Correcting lib004_frag90_150
+Warning messages:
+1: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) :
+  collapsing to unique 'x' values
+2: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) :
+  collapsing to unique 'x' values
