@@ -1,0 +1,271 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job           count    min threads    max threads
+----------  -------  -------------  -------------
+all               1              1              1
+bam_to_wig        4              1              1
+total             5              1              1
+
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (4):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+Select jobs to execute...
+Selected jobs (4):
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+	bam_to_wig
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Tue Aug 23 10:29:38 2022]
+rule bam_to_wig:
+    input: /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib004_frag90_150.bam
+    output: test/wig/lib004_frag90_150.wig
+    jobid: 6
+    wildcards: library=lib004, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib004_frag90_150.bam > test/wig/lib004_frag90_150.wig
+        
+
+[Tue Aug 23 10:29:38 2022]
+rule bam_to_wig:
+    input: /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib005_frag90_150.bam
+    output: test/wig/lib005_frag90_150.wig
+    jobid: 7
+    wildcards: library=lib005, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib005_frag90_150.bam > test/wig/lib005_frag90_150.wig
+        
+
+[Tue Aug 23 10:29:38 2022]
+rule bam_to_wig:
+    input: /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib003_frag90_150.bam
+    output: test/wig/lib003_frag90_150.wig
+    jobid: 5
+    wildcards: library=lib003, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib003_frag90_150.bam > test/wig/lib003_frag90_150.wig
+        
+
+[Tue Aug 23 10:29:38 2022]
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2372, in run_wrapper
+    run(
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 75, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/shell.py", line 263, in __new__
+    raise sp.CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib004_frag90_150.bam > test/wig/lib004_frag90_150.wig' returned non-zero exit status 127.
+
+rule bam_to_wig:
+    input: /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib006_frag90_150.bam
+    output: test/wig/lib006_frag90_150.wig
+    jobid: 8
+    wildcards: library=lib006, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib006_frag90_150.bam > test/wig/lib006_frag90_150.wig
+        
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2372, in run_wrapper
+    run(
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 75, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/shell.py", line 263, in __new__
+    raise sp.CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib005_frag90_150.bam > test/wig/lib005_frag90_150.wig' returned non-zero exit status 127.
+
+[Tue Aug 23 10:29:38 2022]
+Error in rule bam_to_wig:
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2372, in run_wrapper
+    run(
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 75, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/shell.py", line 263, in __new__
+    raise sp.CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib003_frag90_150.bam > test/wig/lib003_frag90_150.wig' returned non-zero exit status 127.
+
+    jobid: 7
+[Tue Aug 23 10:29:38 2022]
+    output: test/wig/lib005_frag90_150.wig
+Error in rule bam_to_wig:
+[Tue Aug 23 10:29:38 2022]
+    shell:
+        
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib005_frag90_150.bam > test/wig/lib005_frag90_150.wig
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    jobid: 6
+Error in rule bam_to_wig:
+
+    output: test/wig/lib004_frag90_150.wig
+    jobid: 5
+    shell:
+        
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib004_frag90_150.bam > test/wig/lib004_frag90_150.wig
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    output: test/wig/lib003_frag90_150.wig
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2372, in run_wrapper
+    run(
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 75, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/shell.py", line 263, in __new__
+    raise sp.CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib005_frag90_150.bam > test/wig/lib005_frag90_150.wig' returned non-zero exit status 127.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 592, in _callback
+    raise ex
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/concurrent/futures/thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 578, in cached_or_run
+    run_func(*args)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2405, in run_wrapper
+    raise RuleException(
+snakemake.exceptions.RuleException: CalledProcessError in line 34 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib005_frag90_150.bam > test/wig/lib005_frag90_150.wig' returned non-zero exit status 127.
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 34, in __rule_bam_to_wig
+
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2372, in run_wrapper
+    run(
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 75, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/shell.py", line 263, in __new__
+    raise sp.CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib006_frag90_150.bam > test/wig/lib006_frag90_150.wig' returned non-zero exit status 127.
+
+
+    shell:
+        
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib003_frag90_150.bam > test/wig/lib003_frag90_150.wig
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+RuleException:
+CalledProcessError in line 34 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib005_frag90_150.bam > test/wig/lib005_frag90_150.wig' returned non-zero exit status 127.
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 34, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/concurrent/futures/thread.py", line 52, in run
+[Tue Aug 23 10:29:38 2022]
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2372, in run_wrapper
+    run(
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 75, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/shell.py", line 263, in __new__
+    raise sp.CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib004_frag90_150.bam > test/wig/lib004_frag90_150.wig' returned non-zero exit status 127.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 592, in _callback
+    raise ex
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/concurrent/futures/thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 578, in cached_or_run
+    run_func(*args)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2405, in run_wrapper
+    raise RuleException(
+snakemake.exceptions.RuleException: CalledProcessError in line 34 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib004_frag90_150.bam > test/wig/lib004_frag90_150.wig' returned non-zero exit status 127.
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 34, in __rule_bam_to_wig
+
+
+Removing output files of failed job bam_to_wig since they might be corrupted:
+test/wig/lib005_frag90_150.wig
+Error in rule bam_to_wig:
+RuleException:
+CalledProcessError in line 34 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib004_frag90_150.bam > test/wig/lib004_frag90_150.wig' returned non-zero exit status 127.
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 34, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/concurrent/futures/thread.py", line 52, in run
+    jobid: 8
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2372, in run_wrapper
+    run(
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 75, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/shell.py", line 263, in __new__
+    raise sp.CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib003_frag90_150.bam > test/wig/lib003_frag90_150.wig' returned non-zero exit status 127.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 592, in _callback
+    raise ex
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/concurrent/futures/thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 578, in cached_or_run
+    run_func(*args)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2405, in run_wrapper
+    raise RuleException(
+snakemake.exceptions.RuleException: CalledProcessError in line 34 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib003_frag90_150.bam > test/wig/lib003_frag90_150.wig' returned non-zero exit status 127.
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 34, in __rule_bam_to_wig
+
+Removing output files of failed job bam_to_wig since they might be corrupted:
+test/wig/lib004_frag90_150.wig
+    output: test/wig/lib006_frag90_150.wig
+    shell:
+        
+        /opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib006_frag90_150.bam > test/wig/lib006_frag90_150.wig
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+RuleException:
+CalledProcessError in line 34 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib003_frag90_150.bam > test/wig/lib003_frag90_150.wig' returned non-zero exit status 127.
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 34, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/concurrent/futures/thread.py", line 52, in run
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2372, in run_wrapper
+    run(
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 75, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/shell.py", line 263, in __new__
+    raise sp.CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib006_frag90_150.bam > test/wig/lib006_frag90_150.wig' returned non-zero exit status 127.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 592, in _callback
+    raise ex
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/concurrent/futures/thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 578, in cached_or_run
+    run_func(*args)
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 2405, in run_wrapper
+    raise RuleException(
+snakemake.exceptions.RuleException: CalledProcessError in line 34 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib006_frag90_150.bam > test/wig/lib006_frag90_150.wig' returned non-zero exit status 127.
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 34, in __rule_bam_to_wig
+
+Removing output files of failed job bam_to_wig since they might be corrupted:
+test/wig/lib003_frag90_150.wig
+RuleException:
+CalledProcessError in line 34 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+Command '/opt/hmmcopy_utils/bin/readCounter --window 1000000 --quality 20         --chromosome chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX         /home/jeszyman/repos/cfdna-cna/test/bam/frag/lib006_frag90_150.bam > test/wig/lib006_frag90_150.wig' returned non-zero exit status 127.
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 34, in __rule_bam_to_wig
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/concurrent/futures/thread.py", line 52, in run
+Removing output files of failed job bam_to_wig since they might be corrupted:
+test/wig/lib006_frag90_150.wig
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /home/jeszyman/repos/cfdna-cna/.snakemake/log/2022-08-23T102937.941417.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks

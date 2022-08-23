@@ -1,0 +1,15 @@
+Full Traceback (most recent call last):
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/__init__.py", line 591, in snakemake
+    workflow.include(
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/workflow.py", line 1173, in include
+    exec(compile(code, snakefile, "exec"), self.globals)
+  File "/home/jeszyman/repos/cfdna-cna/workflow/int_test.smk", line 37, in <module>
+  File "/opt/miniconda3/envs/snakemake/lib/python3.9/site-packages/snakemake/workflow.py", line 1173, in include
+    exec(compile(code, snakefile, "exec"), self.globals)
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 91, in <module>
+NameError: name 'NORMAL_LIBRARIES' is not defined
+
+NameError in line 45 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
+name 'NORMAL_LIBRARIES' is not defined
+  File "/home/jeszyman/repos/cfdna-cna/workflow/int_test.smk", line 31, in <module>
+  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk", line 45, in <module>

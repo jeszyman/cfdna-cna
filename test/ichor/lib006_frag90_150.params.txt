@@ -1,0 +1,25 @@
+Sample	Tumor Fraction	Ploidy
+lib006_frag90_150	0	4.764
+
+
+lib006_frag90_150
+Gender:	female
+Tumor Fraction:	0
+Ploidy:	4.764
+Subclone Fraction:	NA
+Fraction Genome Subclonal:	0
+Fraction CNA Subclonal:	0
+Coverage:	NA
+ChrY coverage fraction:	0.001661
+ChrX median log ratio:	0.1882
+Student's t mean: -1.6, -0.86, -0.46
+Student's t precision: 2.2, 3.1, 4.7
+Gamma Rate Init:	0.42
+GC-Map correction MAD:	0.4268
+
+
+init	n_est	phi_est	BIC	Frac_genome_subclonal	Frac_CNA_subclonal	loglik
+n0.95-p2	0.15	3.103	NA	0	0	-2489
+n0.99-p2	1	4.764	NA	0	0	-1955
+n0.995-p2	1	4.828	NA	0	0	-1962
+n0.999-p2	1	4.85	NA	0	0	-1961

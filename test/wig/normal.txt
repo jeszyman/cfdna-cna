@@ -1,0 +1,2 @@
+test/wig/lib003_frag90_150.wig
+test/wig/lib004_frag90_150.wig
