@@ -163,7 +163,6 @@ Rscript /opt/ichorCNA/scripts/createPanelOfNormals.R --filelist $filelist \
         --outfile "${out_dir}/pon"
 
 #+end_src
-
 *** DONE Run ichor
 #+begin_src snakemake
 rule ichor:
@@ -279,6 +278,36 @@ rule ichor:
   #                                                   HD_ULP_PoN_hg38_1Mb_median_normAutosome_median.rds
   #+end_src
 - Notes: Fails when extdata PoN specified
+*** TODO Run ichor no PON
+#+begin_src snakemake
+rule ichor_nopon:
+    input:
+        wig = wig + "/{library}_frag{frag_distro}.wig",
+	pon = wig + "/pon_median.rds",
+    output:
+        ichor_nopon + "/{library}_frag{frag_distro}.cna.seg",
+    params:
+        script = cfdna_wgs_scripts + "/MOD_runIchorCNA.R",
+        out_dir = ichor_nopon,
+    container:
+        cfdna_wgs_container,
+    shell:
+        """
+        Rscript {params.script} \
+         --id {wildcards.library}_frag{wildcards.frag_distro} \
+         --WIG {input.wig} \
+         --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig \
+         --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig \
+         --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt \
+         --normal "c(0.95, 0.99, 0.995, 0.999)" \
+         --ploidy "c(2)" \
+         --maxCN 3 \
+         --estimateScPrevalence FALSE \
+         --scStates "c()" \
+         --outDir {params.out_dir}
+        """
+#+end_src
+
 *** :dev:
 :PROPERTIES:
 :header-args:snakemake: :tangle no
@@ -340,7 +369,7 @@ cfdna_wgs_cna_bam_fragfilt = config["dir"]["data"] + "/bam/frag"
 wig = config["dir"]["data"] + "/wig"
 ichor = config["dir"]["data"] + "/ichor"
 cfdna_wgs_logs = config["dir"]["data"] + "logs/cfdna_wgs"
-
+ichor_nopon = config["dir"]["data"] + "/ichor_nopon"
 #+end_src
 *** All rule
 #+begin_src snakemake :tangle ./workflow/int_test.smk
@@ -356,13 +385,18 @@ rule all:
         #wig + "/pon_median.rds",
 	# Ichor
         expand(ichor + "/{library}_frag{frag_distro}.cna.seg", library = LIBRARIES, frag_distro = ["90_150"]),
+        expand(ichor_nopon + "/{library}_frag{frag_distro}.cna.seg", library = LIBRARIES, frag_distro = ["90_150"]),
 #+end_src
 *** Includes
 #+begin_src snakemake
 include: "cfdna_wgs_cna.smk"
 #+end_src
 ** README
+:PROPERTIES:
+:export_file_name: ./README.md
+:END:
 *** Change Log
+- [2022-09-12 Mon]: Version 2.1.0, added no-panel of normal outputs
 - [2022-04-29 Fri]: First commit, copying from the old mpnst-cna repo. Untested.
 ** Ideas
 - Ideas- biocparallel? for ichor sections

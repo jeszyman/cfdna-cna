@@ -1,0 +1,114 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job stats:
+job            count    min threads    max threads
+-----------  -------  -------------  -------------
+all                1              1              1
+ichor_nopon        4              1              1
+total              5              1              1
+
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (4):
+	ichor_nopon
+	ichor_nopon
+	ichor_nopon
+	ichor_nopon
+Select jobs to execute...
+Selected jobs (4):
+	ichor_nopon
+	ichor_nopon
+	ichor_nopon
+	ichor_nopon
+Resources after job selection: {'_cores': 0, '_nodes': 9223372036854775803}
+
+[Mon Sep 12 12:59:32 2022]
+rule ichor_nopon:
+    input: test/wig/lib005_frag90_150.wig, test/wig/pon_median.rds
+    output: test/ichor_nopon/lib005_frag90_150.cna.seg
+    jobid: 17
+    wildcards: library=lib005, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib005_frag90_150          --WIG test/wig/lib005_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_nopon
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt --bind /opt/miniconda3/envs/snakemake/lib/python3.9/site-packages:/mnt/snakemake /home/jeszyman/sing_containers/cfdna_wgs.1.0.0.sif bash -c 'Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib005_frag90_150          --WIG test/wig/lib005_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_nopon'
+
+Activating singularity image /home/jeszyman/sing_containers/cfdna_wgs.1.0.0.sif
+[Mon Sep 12 12:59:32 2022]
+rule ichor_nopon:
+    input: test/wig/lib006_frag90_150.wig, test/wig/pon_median.rds
+    output: test/ichor_nopon/lib006_frag90_150.cna.seg
+    jobid: 18
+    wildcards: library=lib006, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib006_frag90_150          --WIG test/wig/lib006_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_nopon
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt --bind /opt/miniconda3/envs/snakemake/lib/python3.9/site-packages:/mnt/snakemake /home/jeszyman/sing_containers/cfdna_wgs.1.0.0.sif bash -c 'Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib006_frag90_150          --WIG test/wig/lib006_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_nopon'
+Activating singularity image /home/jeszyman/sing_containers/cfdna_wgs.1.0.0.sif
+
+[Mon Sep 12 12:59:32 2022]
+rule ichor_nopon:
+    input: test/wig/lib004_frag90_150.wig, test/wig/pon_median.rds
+    output: test/ichor_nopon/lib004_frag90_150.cna.seg
+    jobid: 16
+    wildcards: library=lib004, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib004_frag90_150          --WIG test/wig/lib004_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_nopon
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt --bind /opt/miniconda3/envs/snakemake/lib/python3.9/site-packages:/mnt/snakemake /home/jeszyman/sing_containers/cfdna_wgs.1.0.0.sif bash -c 'Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib004_frag90_150          --WIG test/wig/lib004_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_nopon'
+Activating singularity image /home/jeszyman/sing_containers/cfdna_wgs.1.0.0.sif
+
+[Mon Sep 12 12:59:32 2022]
+rule ichor_nopon:
+    input: test/wig/lib003_frag90_150.wig, test/wig/pon_median.rds
+    output: test/ichor_nopon/lib003_frag90_150.cna.seg
+    jobid: 15
+    wildcards: library=lib003, frag_distro=90_150
+    resources: tmpdir=/tmp
+
+
+        Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib003_frag90_150          --WIG test/wig/lib003_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_nopon
+        
+ singularity  exec --home /home/jeszyman/repos/cfdna-cna --bind /home/jeszyman:/home/jeszyman --bind /mnt:/mnt --bind /opt/miniconda3/envs/snakemake/lib/python3.9/site-packages:/mnt/snakemake /home/jeszyman/sing_containers/cfdna_wgs.1.0.0.sif bash -c 'Rscript .//workflow/scripts/MOD_runIchorCNA.R          --id lib003_frag90_150          --WIG test/wig/lib003_frag90_150.wig          --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig          --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig          --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt          --normal "c(0.95, 0.99, 0.995, 0.999)"          --ploidy "c(2)"          --maxCN 3          --estimateScPrevalence FALSE          --scStates "c()"          --outDir test/ichor_nopon'
+Activating singularity image /home/jeszyman/sing_containers/cfdna_wgs.1.0.0.sif
+[Mon Sep 12 13:00:00 2022]
+Finished job 15.
+1 of 5 steps (20%) done
+[Mon Sep 12 13:00:00 2022]
+Finished job 16.
+2 of 5 steps (40%) done
+[Mon Sep 12 13:00:05 2022]
+Finished job 18.
+3 of 5 steps (60%) done
+[Mon Sep 12 13:00:10 2022]
+Finished job 17.
+4 of 5 steps (80%) done
+Resources before job selection: {'_cores': 4, '_nodes': 9223372036854775807}
+Ready jobs (1):
+	all
+Select jobs to execute...
+Selected jobs (1):
+	all
+Resources after job selection: {'_cores': 3, '_nodes': 9223372036854775806}
+
+[Mon Sep 12 13:00:10 2022]
+localrule all:
+    input: test/ichor/lib003_frag90_150.cna.seg, test/ichor/lib004_frag90_150.cna.seg, test/ichor/lib005_frag90_150.cna.seg, test/ichor/lib006_frag90_150.cna.seg, test/ichor_nopon/lib003_frag90_150.cna.seg, test/ichor_nopon/lib004_frag90_150.cna.seg, test/ichor_nopon/lib005_frag90_150.cna.seg, test/ichor_nopon/lib006_frag90_150.cna.seg
+    jobid: 0
+    resources: tmpdir=/tmp
+
+[Mon Sep 12 13:00:10 2022]
+Finished job 0.
+5 of 5 steps (100%) done
+Complete log: /home/jeszyman/repos/cfdna-cna/.snakemake/log/2022-09-12T125932.162954.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks

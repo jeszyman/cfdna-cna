@@ -16,6 +16,7 @@ cfdna_wgs_cna_bam_fragfilt = config["dir"]["data"] + "/bam/frag"
 wig = config["dir"]["data"] + "/wig"
 ichor = config["dir"]["data"] + "/ichor"
 cfdna_wgs_logs = config["dir"]["data"] + "logs/cfdna_wgs"
+ichor_nopon = config["dir"]["data"] + "/ichor_nopon"
 
 rule all:
     input:
@@ -29,5 +30,6 @@ rule all:
         #wig + "/pon_median.rds",
 	# Ichor
         expand(ichor + "/{library}_frag{frag_distro}.cna.seg", library = LIBRARIES, frag_distro = ["90_150"]),
+        expand(ichor_nopon + "/{library}_frag{frag_distro}.cna.seg", library = LIBRARIES, frag_distro = ["90_150"]),
 
 include: "cfdna_wgs_cna.smk"

@@ -103,3 +103,30 @@ rule ichor:
          --scStates "c()" \
          --outDir {params.out_dir}
         """
+
+rule ichor_nopon:
+    input:
+        wig = wig + "/{library}_frag{frag_distro}.wig",
+	pon = wig + "/pon_median.rds",
+    output:
+        ichor_nopon + "/{library}_frag{frag_distro}.cna.seg",
+    params:
+        script = cfdna_wgs_scripts + "/MOD_runIchorCNA.R",
+        out_dir = ichor_nopon,
+    container:
+        cfdna_wgs_container,
+    shell:
+        """
+        Rscript {params.script} \
+         --id {wildcards.library}_frag{wildcards.frag_distro} \
+         --WIG {input.wig} \
+         --gcWig /opt/ichorCNA/inst/extdata/gc_hg38_1000kb.wig \
+         --mapWig /opt/ichorCNA/inst/extdata/map_hg38_1000kb.wig \
+         --centromere /opt/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt \
+         --normal "c(0.95, 0.99, 0.995, 0.999)" \
+         --ploidy "c(2)" \
+         --maxCN 3 \
+         --estimateScPrevalence FALSE \
+         --scStates "c()" \
+         --outDir {params.out_dir}
+        """
