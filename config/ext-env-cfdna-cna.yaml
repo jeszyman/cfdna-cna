@@ -1,0 +1,27 @@
+# Conda environment for cell-free DNA copy number alteration analysis
+
+#########1#########1#########1#########1#########1#########1#########1#########1
+
+
+# Note:
+#
+# This environment is intended to extend my basic environments for computing
+# and bioinformatics, which can be found in stable versions online:
+#
+# Basic computing at
+# https://raw.githubusercontent.com/jeszyman/basecamp/v1.0.0/basecamp_env.yaml
+#
+# Bioinformatics at
+# https://raw.githubusercontent.com/jeszyman/basecamp/v1.0.0/basecamp_env.yaml
+
+name: cfdna-cna
+
+channels:
+  - conda-forge
+  - bioconda
+
+# Adding 'defaults' to channel list implicitly is deprecated and will be removed in 25.3.
+
+dependencies:
+
+  - hhmcopy

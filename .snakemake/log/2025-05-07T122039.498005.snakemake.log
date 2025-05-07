@@ -1,0 +1,54 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 64
+Rules claiming more threads will be scaled down.
+Provided resources: concurrency=100
+Job stats:
+job          count
+---------  -------
+all              1
+make_wig         1
+run_ichor        1
+total            3
+
+Select jobs to execute...
+
+[Wed May  7 12:20:39 2025]
+rule make_wig:
+    input: /mnt/data/projects/breast/analysis/cna/NH_39_L1.bam
+    output: /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+    jobid: 2
+    reason: Missing output files: /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+    wildcards: library_id=NH_39_L1
+    resources: tmpdir=/tmp
+
+[Wed May  7 12:21:22 2025]
+Finished job 2.
+1 of 3 steps (33%) done
+Select jobs to execute...
+
+[Wed May  7 12:21:22 2025]
+rule run_ichor:
+    input: /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+    output: /mnt/data/projects/breast/analysis/cna/ichor/NH_39_L1/NH_39_L1.cna.seg
+    jobid: 1
+    reason: Missing output files: /mnt/data/projects/breast/analysis/cna/ichor/NH_39_L1/NH_39_L1.cna.seg; Input files updated by another job: /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+    wildcards: library_id=NH_39_L1
+    resources: tmpdir=/tmp
+
+[Wed May  7 12:21:33 2025]
+Finished job 1.
+2 of 3 steps (67%) done
+Select jobs to execute...
+
+[Wed May  7 12:21:33 2025]
+localrule all:
+    input: /mnt/data/projects/breast/analysis/cna/ichor/NH_39_L1/NH_39_L1.cna.seg
+    jobid: 0
+    reason: Input files updated by another job: /mnt/data/projects/breast/analysis/cna/ichor/NH_39_L1/NH_39_L1.cna.seg
+    resources: tmpdir=/tmp
+
+[Wed May  7 12:21:33 2025]
+Finished job 0.
+3 of 3 steps (100%) done
+Complete log: .snakemake/log/2025-05-07T122039.498005.snakemake.log

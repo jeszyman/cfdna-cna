@@ -1,0 +1,29 @@
+  name: ichor
+  channels:
+    - dranew
+    - conda-forge
+    - bioconda
+    - defaults
+  dependencies:
+    - hmmcopy_utils
+    - python=3.10
+    - r-base=4.4
+    - r-optparse
+    - r-tidyverse
+    - r-getopt
+    - r-devtools
+    - r-remotes
+    - r-biocmanager
+    - bioconductor-genomicfeatures
+    - bioconductor-annotationdbi
+    - bioconductor-biomart
+    - bioconductor-hmmcopy
+    - git
+    - libgit2
+    - curl
+    - openssl
+    - pkg-config
+    - make
+    - gcc
+    - pandoc
+    - snakemake

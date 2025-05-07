@@ -1,0 +1,3 @@
+ichor-bam-dir: /mnt/data/projects/breast/analysis/cna
+ichor-wig-dir: /mnt/data/projects/breast/analysis/cna/wig
+ichor-main-out-dir: /mnt/data/projects/breast/analysis/cna/ichor
