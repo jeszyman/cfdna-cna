@@ -19,6 +19,7 @@
 rule make_wig:
     input:
         bam = f"{ichor_bam_dir}/{{library_id}}.bam",
+        bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
     output:
         wig = f"{ichor_wig_dir}/{{library_id}}.wig",
     params:
