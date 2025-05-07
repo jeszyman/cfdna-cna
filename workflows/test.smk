@@ -26,6 +26,7 @@ rule make_wig:
         quality = 20,
     shell:
         """
+        mkdir -p "{ichor_wig_dir}"
         readCounter \
         --window {params.window} \
         --quality {params.quality} \
