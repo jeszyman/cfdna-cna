@@ -1,20 +1,20 @@
-import pandas as pd
-import os
-from tabulate import tabulate
-import sys
+# import pandas as pd
+# import os
+# from tabulate import tabulate
+# import sys
 
 
-ichor_bam_dir = config["ichor-bam-dir"]
-ichor_wig_dir = config["ichor-wig-dir"]
-ichor_out_main_dir = config["ichor-main-out-dir"]
+# ichor_bam_dir = config["ichor-bam-dir"]
+# ichor_wig_dir = config["ichor-wig-dir"]
+# ichor_out_main_dir = config["ichor-main-out-dir"]
 
-library_id = "NH_39_L1"
+# library_id = "NH_39_L1"
 
 
-rule all:
-    input:
-        expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
-               library_id=["NH_39_L1"]),
+# rule all:
+#     input:
+#         expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
+#                library_id=["NH_39_L1"]),
 
 
 # Will follow symlinks
