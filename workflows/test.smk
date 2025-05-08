@@ -16,6 +16,16 @@
 #         expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
 #                library_id=["NH_39_L1"]),
 
+rule ichor_index_bam_check:
+    input:
+        bam = ancient(f"{ichor_bam_dir}/{{library_id}}.bam"),
+    output:
+        bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
+    shell:
+        """
+        samtools index -@ 8 {input.bam} {output.bai}
+        """
+
 rule make_wig:
     input:
         bam = f"{ichor_bam_dir}/{{library_id}}.bam",
