@@ -1,0 +1,41 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 64
+Rules claiming more threads will be scaled down.
+Provided resources: concurrency=100
+Singularity containers: ignored
+Job stats:
+job          count
+---------  -------
+all              1
+make_wig         1
+run_ichor        1
+total            3
+
+Select jobs to execute...
+
+[Thu May  8 13:57:46 2025]
+rule make_wig:
+    input: /mnt/data/projects/breast/analysis/cna/NH_39_L1.bam, /mnt/data/projects/breast/analysis/cna/NH_39_L1.bam.bai
+    output: /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+    jobid: 2
+    reason: Missing output files: /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+    wildcards: library_id=NH_39_L1
+    resources: tmpdir=/tmp
+
+[Thu May  8 13:57:46 2025]
+Error in rule make_wig:
+    jobid: 2
+    input: /mnt/data/projects/breast/analysis/cna/NH_39_L1.bam, /mnt/data/projects/breast/analysis/cna/NH_39_L1.bam.bai
+    output: /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+    shell:
+        
+        mkdir -p "/mnt/data/projects/breast/analysis/cna/wig"
+        readCounter         --window 1000000         --quality 20 	--chromosome "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y"         /mnt/data/projects/breast/analysis/cna/NH_39_L1.bam /mnt/data/projects/breast/analysis/cna/NH_39_L1.bam.bai > /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Removing output files of failed job make_wig since they might be corrupted:
+/mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2025-05-08T135745.835459.snakemake.log

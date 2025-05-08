@@ -1,20 +1,21 @@
-# import pandas as pd
-# import os
-# from tabulate import tabulate
-# import sys
+import pandas as pd
+import os
+from tabulate import tabulate
+import sys
 
 
-# ichor_bam_dir = config["ichor-bam-dir"]
-# ichor_wig_dir = config["ichor-wig-dir"]
-# ichor_out_main_dir = config["ichor-main-out-dir"]
+ichor_bam_dir = config["ichor-bam-dir"]
+ichor_wig_dir = config["ichor-wig-dir"]
+ichor_out_main_dir = config["ichor-main-out-dir"]
 
-# library_id = "NH_39_L1"
+library_id = "NH_39_L1"
 
 
-# rule all:
-#     input:
-#         expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
-#                library_id=["NH_39_L1"]),
+rule all:
+    input:
+        expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
+               library_id=["NH_39_L1"]),
+
 
 # Will follow symlinks
 rule ichor_index_bam_check:
@@ -28,6 +29,7 @@ rule ichor_index_bam_check:
         """
 
 rule make_wig:
+    container: "/home/jeszyman/sifs/ichor.sif",
     input:
         bam = f"{ichor_bam_dir}/{{library_id}}.bam",
         bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
@@ -47,19 +49,20 @@ rule make_wig:
         """
 
 rule run_ichor:
+    container: "/home/jeszyman/sifs/ichor.sif"
     input:
-        wig = f"{ichor_wig_dir}/{{library_id}}.wig",
+        wig = f"{ichor_wig_dir}/{{library_id}}.wig"
     output:
-        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
+        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg"
     params:
-        ichor_dir = "~/repos/ichorCNA",
-        ichor_out_main_dir = ichor_out_main_dir,
+        ichor_dir = "/home/jeszyman/repos/ichorCNA",  # absolute path
+        ichor_out_main_dir = ichor_out_main_dir
     shell:
         """
         Rscript {params.ichor_dir}/scripts/runIchorCNA.R \
         --id {wildcards.library_id} \
         --WIG {input.wig} \
-	--normal "c(0.95, 0.99, 0.995, 0.999)" \
+        --normal "c(0.95, 0.99, 0.995, 0.999)" \
         --genomeBuild "hg38" \
         --ploidy "c(2)" \
         --gcWig {params.ichor_dir}/inst/extdata/gc_hg38_1000kb.wig \

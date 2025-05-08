@@ -1,0 +1,37 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 8
+Rules claiming more threads will be scaled down.
+Job stats:
+job          count
+---------  -------
+all              1
+run_ichor        1
+total            2
+
+Select jobs to execute...
+
+[Thu May  8 14:12:44 2025]
+rule run_ichor:
+    input: /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+    output: /mnt/data/projects/breast/analysis/cna/ichor/NH_39_L1/NH_39_L1.cna.seg
+    jobid: 1
+    reason: Missing output files: /mnt/data/projects/breast/analysis/cna/ichor/NH_39_L1/NH_39_L1.cna.seg
+    wildcards: library_id=NH_39_L1
+    resources: tmpdir=/tmp
+
+Activating singularity image /home/jeszyman/sifs/ichor.sif
+[Thu May  8 14:12:45 2025]
+Error in rule run_ichor:
+    jobid: 1
+    input: /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig
+    output: /mnt/data/projects/breast/analysis/cna/ichor/NH_39_L1/NH_39_L1.cna.seg
+    shell:
+        
+        Rscript ~/repos/ichorCNA/scripts/runIchorCNA.R         --id NH_39_L1         --WIG /mnt/data/projects/breast/analysis/cna/wig/NH_39_L1.wig 	--normal "c(0.95, 0.99, 0.995, 0.999)"         --genomeBuild "hg38"         --ploidy "c(2)"         --gcWig ~/repos/ichorCNA/inst/extdata/gc_hg38_1000kb.wig         --mapWig ~/repos/ichorCNA/inst/extdata/map_hg38_1000kb.wig         --centromere ~/repos/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt         --normalPanel ~/repos/ichorCNA/inst/extdata/HD_ULP_PoN_1Mb_median_normAutosome_mapScoreFiltered_median.rds         --includeHOMD False --chrs "c(1:22)" --chrTrain "c(1:22)"         --estimateNormal True --estimatePloidy True --estimateScPrevalence True         --scStates "c()" --txnE 0.9999 --txnStrength 10000 --outDir /mnt/data/projects/breast/analysis/cna/ichor/NH_39_L1
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2025-05-08T141244.627099.snakemake.log
