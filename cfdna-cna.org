@@ -189,6 +189,7 @@ Rscript ~/repos/ichorCNA/scripts/runIchorCNA.R \
 #         expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
 #                library_id=["NH_39_L1"]),
 
+# Will follow symlinks
 rule ichor_index_bam_check:
     input:
         bam = ancient(f"{ichor_bam_dir}/{{library_id}}.bam"),
@@ -449,6 +450,12 @@ RUN /bin/bash -c "source /opt/conda/etc/profile.d/conda.sh && \
 
 WORKDIR /data
 ENTRYPOINT ["/bin/bash"]
+#+end_src
+#+begin_src bash
+cd ~/repos/cfdna-cna
+docker build -t ichor .
+singularity build ichor.sif docker-daemon://ichor:latest
+
 #+end_src
 
 ** ichorCNA optimization

@@ -16,6 +16,7 @@
 #         expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
 #                library_id=["NH_39_L1"]),
 
+# Will follow symlinks
 rule ichor_index_bam_check:
     input:
         bam = ancient(f"{ichor_bam_dir}/{{library_id}}.bam"),
