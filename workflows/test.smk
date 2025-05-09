@@ -55,8 +55,8 @@ rule run_ichor:
     output:
         f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg"
     params:
-        ichor_dir = "/home/jeszyman/repos/ichorCNA",  # absolute path
-        ichor_out_main_dir = ichor_out_main_dir
+        ichor_dir = ichor_dir,
+        ichor_out_main_dir = ichor_out_main_dir,
     shell:
         """
         Rscript {params.ichor_dir}/scripts/runIchorCNA.R \
