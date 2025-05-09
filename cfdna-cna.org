@@ -243,16 +243,16 @@ rule run_ichor:
         ichor_repo = ichor_repo,
     shell:
         """
-        Rscript {params.ichor_repo}/ichorCNA/scripts/runIchorCNA.R \
+        Rscript {params.ichor_repo}/scripts/runIchorCNA.R \
         --id {wildcards.library_id} \
         --WIG {input.wig} \
         --normal "c(0.95, 0.99, 0.995, 0.999)" \
         --genomeBuild "hg38" \
         --ploidy "c(2)" \
-        --gcWig {params.ichor_repo}/ichorCNA/inst/extdata/gc_hg38_1000kb.wig \
-        --mapWig {params.ichor_repo}/ichorCNA/inst/extdata/map_hg38_1000kb.wig \
-        --centromere {params.ichor_repo}/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt \
-        --normalPanel {params.ichor_repo}/ichorCNA/inst/extdata/HD_ULP_PoN_1Mb_median_normAutosome_mapScoreFiltered_median.rds \
+        --gcWig {params.ichor_repo}/inst/extdata/gc_hg38_1000kb.wig \
+        --mapWig {params.ichor_repo}/inst/extdata/map_hg38_1000kb.wig \
+        --centromere {params.ichor_repo}/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt \
+        --normalPanel {params.ichor_repo}/inst/extdata/HD_ULP_PoN_1Mb_median_normAutosome_mapScoreFiltered_median.rds \
         --includeHOMD False --chrs "c(1:22)" --chrTrain "c(1:22)" \
         --estimateNormal True --estimatePloidy True --estimateScPrevalence True \
         --scStates "c()" --txnE 0.9999 --txnStrength 10000 --outDir {params.ichor_out_main_dir}/{wildcards.library_id}
