@@ -129,7 +129,7 @@ rule ichor_index_bam_check:
         """
 
 rule make_wig:
-    container: "/home/jeszyman/sifs/ichor.sif",
+    container: f"{sif_dir}/ichor.sif",
     input:
         bam = f"{ichor_bam_dir}/{{library_id}}.bam",
         bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
@@ -149,7 +149,7 @@ rule make_wig:
         """
 
 rule run_ichor:
-    container: "/home/jeszyman/sifs/ichor.sif"
+    container: f"{sif_dir}/ichor.sif"
     input:
         wig = f"{ichor_wig_dir}/{{library_id}}.wig"
     output:
