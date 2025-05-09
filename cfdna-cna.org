@@ -4,6 +4,15 @@
 :header-args:bash: :tangle-mode (identity #o555)
 :END:
 
+#+begin_src bash
+docker tag 460d842ba9db jeszyman/ichor:latest
+docker login
+
+docker push jeszyman/ichor:latest
+
+#+end_src
+
+
 - Cannot do bioc installs w/i conda on vm
   - will try docker once built
 
