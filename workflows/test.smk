@@ -29,7 +29,6 @@ rule ichor_index_bam_check:
         """
 
 rule make_wig:
-    container: f"{sif_dir}/ichor.sif",
     input:
         bam = f"{ichor_bam_dir}/{{library_id}}.bam",
         bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
@@ -49,27 +48,26 @@ rule make_wig:
         """
 
 rule run_ichor:
-    container: f"{sif_dir}/ichor.sif"
     input:
         wig = f"{ichor_wig_dir}/{{library_id}}.wig"
     output:
         f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg"
     params:
-        ichor_dir = ichor_dir,
         ichor_out_main_dir = ichor_out_main_dir,
+        ichor_repo = ichor_repo,
     shell:
         """
-        Rscript {params.ichor_dir}/scripts/runIchorCNA.R \
+        Rscript {params.ichor_repo}/ichorCNA/scripts/runIchorCNA.R \
         --id {wildcards.library_id} \
         --WIG {input.wig} \
         --normal "c(0.95, 0.99, 0.995, 0.999)" \
         --genomeBuild "hg38" \
         --ploidy "c(2)" \
-        --gcWig {params.ichor_dir}/inst/extdata/gc_hg38_1000kb.wig \
-        --mapWig {params.ichor_dir}/inst/extdata/map_hg38_1000kb.wig \
-        --centromere {params.ichor_dir}/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt \
-        --normalPanel {params.ichor_dir}/inst/extdata/HD_ULP_PoN_1Mb_median_normAutosome_mapScoreFiltered_median.rds \
+        --gcWig {params.ichor_repo}/ichorCNA/inst/extdata/gc_hg38_1000kb.wig \
+        --mapWig {params.ichor_repo}/ichorCNA/inst/extdata/map_hg38_1000kb.wig \
+        --centromere {params.ichor_repo}/ichorCNA/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt \
+        --normalPanel {params.ichor_repo}/ichorCNA/inst/extdata/HD_ULP_PoN_1Mb_median_normAutosome_mapScoreFiltered_median.rds \
         --includeHOMD False --chrs "c(1:22)" --chrTrain "c(1:22)" \
         --estimateNormal True --estimatePloidy True --estimateScPrevalence True \
         --scStates "c()" --txnE 0.9999 --txnStrength 10000 --outDir {params.ichor_out_main_dir}/{wildcards.library_id}
-        """
+         """

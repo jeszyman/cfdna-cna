@@ -63,5 +63,7 @@ RUN apt-get update && apt-get install -y cmake && \
     find bin -type f -executable -exec cp {} /usr/local/bin/ \; && \
     find util -type f -executable -exec cp {} /usr/local/bin/ \;
 
+RUN Rscript -e 'BiocManager::install("BSgenome.Hsapiens.UCSC.hg38", update = FALSE)'
+
 WORKDIR /data
 ENTRYPOINT ["/bin/bash"]
