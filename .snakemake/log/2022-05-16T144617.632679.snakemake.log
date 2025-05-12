@@ -1,7 +1,0 @@
-Building DAG of jobs...
-Nothing to be done (all requested files are present and up to date).
-Complete log: /home/jszymanski/repos/cfdna-cna/.snakemake/log/2022-05-16T144617.632679.snakemake.log
-unlocking
-removing lock
-removing lock
-removed all locks

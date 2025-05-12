@@ -1,5 +1,0 @@
-Building DAG of jobs...
-MissingInputException in line 6 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_cna_int_test.smk:
-Missing input files for rule all:
-test/frag-bam/lib002.bam
-test/frag-bam/lib001.bam

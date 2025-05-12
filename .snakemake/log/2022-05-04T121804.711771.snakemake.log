@@ -1,3 +1,0 @@
-SyntaxError in line 27 of /home/jeszyman/repos/cfdna-cna/workflow/cfdna_wgs_cna.smk:
-invalid syntax
-  File "/home/jeszyman/repos/cfdna-cna/workflow/cfdna_cna_int_test.smk", line 11, in <module>
