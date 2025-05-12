@@ -12,6 +12,27 @@
 - [2022-09-12 Mon]: Version 2.1.0, added no-panel of normal outputs
 - [2022-04-29 Fri]: First commit, copying from the old mpnst-cna repo. Untested.
 ** Documentation
+ichorCNA integration (patched)
+This workflow uses a modified version of the ichorCNA R package to avoid UCSC internet fallback and ensure consistent genome metadata.
+
+Repository:
+The modified version is available at:
+
+https://github.com/jeszyman/ichorCNA-patched
+
+Clone this repository to:
+
+repos/ichorCNA-patched/
+
+Then set the following in your Snakemake config.yaml:
+
+ichor_repo: repos/ichorCNA-patched
+
+Patch summary:
+The script scripts/runIchorCNA.R has been modified to skip UCSC fallback
+and instead load a pre-saved Seqinfo object from:
+
+inst/extdata/seqinfo_hg38_ucsc.rds
 ** Conda
 - Ichor install
   - On R version 4.5
