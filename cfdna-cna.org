@@ -204,7 +204,7 @@ docker push jeszyman/ichor:latest
 #+end_src
 ** Workflows
 - Snakemake
-  #+begin_src snakemake :tangle ./workflows/test.smk
+  #+begin_src snakemake :tangle ./workflows/cna.smk
 # import pandas as pd
 # import os
 # from tabulate import tabulate
