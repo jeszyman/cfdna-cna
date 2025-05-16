@@ -4,6 +4,52 @@
 :header-args:bash: :tangle-mode (identity #o555)
 :END:
 
+
+#+begin_src python :tangle ./scripts/aggregate_logR.py
+#!/usr/bin/env python3
+
+import os
+import glob
+import pandas as pd
+from functools import reduce
+import argparse
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Aggregate logR values from ichorCNA .cna.seg files.")
+    parser.add_argument("--seg_dir", required=True, help="Path to parent directory containing per-sample .cna.seg files.")
+    parser.add_argument("--output_tsv", required=True, help="Path to write aggregated TSV output.")
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+
+    seg_files = glob.glob(os.path.join(args.seg_dir, "*/", "*.cna.seg"))
+    if not seg_files:
+        raise FileNotFoundError(f"No .cna.seg files found in {args.seg_dir}")
+
+    dfs = []
+    for f in seg_files:
+        sample_id = os.path.basename(f).split(".")[0]
+        try:
+            df = pd.read_csv(f, sep="\t", usecols=["chr", "start", "end", f"{sample_id}.logR"])
+        except ValueError as e:
+            raise ValueError(f"Expected column '{sample_id}.logR' not found in {f}") from e
+        df = df.rename(columns={f"{sample_id}.logR": sample_id})
+        dfs.append(df)
+
+    merged = reduce(lambda left, right: pd.merge(left, right, on=["chr", "start", "end"], how="outer"), dfs)
+    merged = merged.sort_values(by=["chr", "start", "end"])
+    merged.to_csv(args.output_tsv, sep="\t", index=False)
+
+
+if __name__ == "__main__":
+    main()
+
+#+end_src
+
+
 ** README
 :PROPERTIES:
 :export_file_name: ./README.md
@@ -258,7 +304,8 @@ rule run_ichor:
     input:
         wig = f"{ichor_wig_dir}/{{library_id}}.wig"
     output:
-        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg"
+        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
+        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.params.txt",
     params:
         ichor_out_main_dir = ichor_out_main_dir,
         ichor_repo = ichor_repo,
@@ -278,6 +325,23 @@ rule run_ichor:
         --estimateNormal True --estimatePloidy True --estimateScPrevalence True \
         --scStates "c()" --txnE 0.9999 --txnStrength 10000 --outDir {params.ichor_out_main_dir}/{wildcards.library_id}
          """
+
+rule extract_tumor_fractions:
+    input:
+        expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.params.txt", library_id=emseq_library_ids)
+    output:
+        f"{ichor_out_main_dir}/ichor_tumor_fractions.tsv"
+    run:
+        with open(output[0], "w") as out:
+            out.write("library\ttf\n")
+            for f in input:
+                sample = f.split("/")[-1].replace(".params.txt", "")
+                with open(f) as fh:
+                    lines = fh.readlines()
+                    if len(lines) >= 2:
+                        tf = lines[1].split()[1]
+                        out.write(f"{sample}\t{tf}\n")
+
 #+end_src
 
 ** Setup and administration

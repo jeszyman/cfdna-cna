@@ -51,7 +51,8 @@ rule run_ichor:
     input:
         wig = f"{ichor_wig_dir}/{{library_id}}.wig"
     output:
-        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg"
+        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
+        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.params.txt",
     params:
         ichor_out_main_dir = ichor_out_main_dir,
         ichor_repo = ichor_repo,
@@ -71,3 +72,19 @@ rule run_ichor:
         --estimateNormal True --estimatePloidy True --estimateScPrevalence True \
         --scStates "c()" --txnE 0.9999 --txnStrength 10000 --outDir {params.ichor_out_main_dir}/{wildcards.library_id}
          """
+
+rule extract_tumor_fractions:
+    input:
+        expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.params.txt", library_id=emseq_library_ids)
+    output:
+        f"{ichor_out_main_dir}/ichor_tumor_fractions.tsv"
+    run:
+        with open(output[0], "w") as out:
+            out.write("library\ttf\n")
+            for f in input:
+                sample = f.split("/")[-1].replace(".params.txt", "")
+                with open(f) as fh:
+                    lines = fh.readlines()
+                    if len(lines) >= 2:
+                        tf = lines[1].split()[1]
+                        out.write(f"{sample}\t{tf}\n")
