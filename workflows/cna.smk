@@ -1,24 +1,7 @@
-# import pandas as pd
-# import os
-# from tabulate import tabulate
-# import sys
-
-
-# ichor_bam_dir = config["ichor-bam-dir"]
-# ichor_wig_dir = config["ichor-wig-dir"]
-# ichor_out_main_dir = config["ichor-main-out-dir"]
-
-# library_id = "NH_39_L1"
-
-
-# rule all:
-#     input:
-#         expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
-#                library_id=["NH_39_L1"]),
-
-
 # Will follow symlinks
 rule ichor_index_bam_check:
+    conda:
+        "../config/cfdna-cna-conda-env.yaml"
     input:
         bam = ancient(f"{ichor_bam_dir}/{{library_id}}.bam"),
     output:
@@ -29,6 +12,8 @@ rule ichor_index_bam_check:
         """
 
 rule make_wig:
+    conda:
+        "../config/cfdna-cna-conda-env.yaml"
     input:
         bam = f"{ichor_bam_dir}/{{library_id}}.bam",
         bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
@@ -48,6 +33,8 @@ rule make_wig:
         """
 
 rule run_ichor:
+    conda:
+        "../config/cfdna-cna-conda-env.yaml"
     input:
         wig = f"{ichor_wig_dir}/{{library_id}}.wig"
     output:

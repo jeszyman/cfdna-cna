@@ -26,6 +26,6 @@ channels:
 # Adding 'defaults' to channel list implicitly is deprecated and will be removed in 25.3.
 
 dependencies:
-
+  - samtools
   - bioconductor-hmmcopy
   # NOT hmmcopy

@@ -3,53 +3,7 @@
 :logging: nil
 :header-args:bash: :tangle-mode (identity #o555)
 :END:
-
-
-#+begin_src python :tangle ./scripts/aggregate_logR.py
-#!/usr/bin/env python3
-
-import os
-import glob
-import pandas as pd
-from functools import reduce
-import argparse
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description="Aggregate logR values from ichorCNA .cna.seg files.")
-    parser.add_argument("--seg_dir", required=True, help="Path to parent directory containing per-sample .cna.seg files.")
-    parser.add_argument("--output_tsv", required=True, help="Path to write aggregated TSV output.")
-    return parser.parse_args()
-
-
-def main():
-    args = parse_args()
-
-    seg_files = glob.glob(os.path.join(args.seg_dir, "*/", "*.cna.seg"))
-    if not seg_files:
-        raise FileNotFoundError(f"No .cna.seg files found in {args.seg_dir}")
-
-    dfs = []
-    for f in seg_files:
-        sample_id = os.path.basename(f).split(".")[0]
-        try:
-            df = pd.read_csv(f, sep="\t", usecols=["chr", "start", "end", f"{sample_id}.logR"])
-        except ValueError as e:
-            raise ValueError(f"Expected column '{sample_id}.logR' not found in {f}") from e
-        df = df.rename(columns={f"{sample_id}.logR": sample_id})
-        dfs.append(df)
-
-    merged = reduce(lambda left, right: pd.merge(left, right, on=["chr", "start", "end"], how="outer"), dfs)
-    merged = merged.sort_values(by=["chr", "start", "end"])
-    merged.to_csv(args.output_tsv, sep="\t", index=False)
-
-
-if __name__ == "__main__":
-    main()
-
-#+end_src
-
-
+** [[elisp:(progn (org-babel-goto-named-src-block "git-workflow-up") (org-babel-execute-src-block))][Run git workflow up]]
 ** README
 :PROPERTIES:
 :export_file_name: ./README.md
@@ -57,6 +11,89 @@ if __name__ == "__main__":
 *** Change Log
 - [2022-09-12 Mon]: Version 2.1.0, added no-panel of normal outputs
 - [2022-04-29 Fri]: First commit, copying from the old mpnst-cna repo. Untested.
+** Setup and administration
+*** Conda environmental YAMLs
+**** CNA
+:properties:
+:header-args:yaml: :tangle ./config/ext-cfdna-cna.yaml :comments no :mkdirp yes
+:end:
+
+#+begin_src yaml
+# Conda environment for cell-free DNA copy number alteration analysis
+
+#########1#########1#########1#########1#########1#########1#########1#########1
+
+
+# Note:
+#
+# This environment is intended to extend my basic environments for computing
+# and bioinformatics, which can be found in stable versions online:
+#
+# Basic computing at
+# https://raw.githubusercontent.com/jeszyman/basecamp/v1.0.0/basecamp_env.yaml
+#
+# Bioinformatics at
+# https://raw.githubusercontent.com/jeszyman/biotools/v1.0.0/biotools_env.yaml
+#
+# Run sequentially env update for basecamp, then biotools, then ext-cfdna-cna
+
+
+name: cfdna-cna
+
+channels:
+  - conda-forge
+  - bioconda
+
+# Adding 'defaults' to channel list implicitly is deprecated and will be removed in 25.3.
+
+dependencies:
+  - samtools
+  - bioconductor-hmmcopy
+  # NOT hmmcopy
+#+end_src
+
+*** Repository
+#+begin_src bash
+cd ~/repos/cfdna-cna
+ls
+mkdir -p tests/full-project/analysis/cna-wig
+#+end_src
+
+#+name: git-workflow-up
+#+begin_src bash :results replace raw
+source ~/repos/basecamp/lib/basecamp_functions.sh
+cd ~/repos/emseq
+output=$(git_wkflow_up 2>&1)
+if [ $? -ne 0 ]; then
+    echo "Error running git_wkflow_up"
+    echo "$output"
+    exit 1
+fi
+
+echo -e "$(date)\n$output"
+
+#+end_src
+
+#+RESULTS: git-workflow-up
+Mon Jun  9 08:32:19 AM CDT 2025
+No changes to commit.
+
+*** Git
+- Add ichor
+  #+begin_src bash
+cd ~/repos/cfdna-cna
+git clone git@github.com:broadinstitute/ichorCNA ichorCNA.v0.2.0
+cd ichorCNA.v0.2.0
+git fetch --depth 1 origin tag v0.2.0
+git checkout tags/v0.2.0
+#+end_src
+*** Configuration
+#+begin_src yaml :tangle ./config/test.yaml
+ichor-bam-dir: /mnt/data/projects/breast/analysis/cna
+ichor-wig-dir: /mnt/data/projects/breast/analysis/cna/wig
+ichor-main-out-dir: /mnt/data/projects/breast/analysis/cna/ichor
+#+end_src
+
 ** Documentation
 ichorCNA integration (patched)
 This workflow uses a modified version of the ichorCNA R package to avoid UCSC internet fallback and ensure consistent genome metadata.
@@ -247,219 +284,6 @@ apptainer build ~/sifs/ichor.sif docker-daemon://ichor:latest
 docker tag 460d842ba9db jeszyman/ichor:latest
 docker login
 docker push jeszyman/ichor:latest
-#+end_src
-** Workflows
-- Snakemake
-  #+begin_src snakemake :tangle ./workflows/cna.smk
-# import pandas as pd
-# import os
-# from tabulate import tabulate
-# import sys
-
-
-# ichor_bam_dir = config["ichor-bam-dir"]
-# ichor_wig_dir = config["ichor-wig-dir"]
-# ichor_out_main_dir = config["ichor-main-out-dir"]
-
-# library_id = "NH_39_L1"
-
-
-# rule all:
-#     input:
-#         expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
-#                library_id=["NH_39_L1"]),
-
-
-# Will follow symlinks
-rule ichor_index_bam_check:
-    input:
-        bam = ancient(f"{ichor_bam_dir}/{{library_id}}.bam"),
-    output:
-        bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
-    shell:
-        """
-        samtools index -@ 8 {input.bam} {output.bai}
-        """
-
-rule make_wig:
-    input:
-        bam = f"{ichor_bam_dir}/{{library_id}}.bam",
-        bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
-    output:
-        wig = f"{ichor_wig_dir}/{{library_id}}.wig",
-    params:
-        window = "1000000",
-        quality = 20,
-    shell:
-        """
-        mkdir -p "{ichor_wig_dir}"
-        readCounter \
-        --window {params.window} \
-        --quality {params.quality} \
-	--chromosome "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y" \
-        {input} > {output}
-        """
-
-rule run_ichor:
-    input:
-        wig = f"{ichor_wig_dir}/{{library_id}}.wig"
-    output:
-        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
-        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.params.txt",
-    params:
-        ichor_out_main_dir = ichor_out_main_dir,
-        ichor_repo = ichor_repo,
-    shell:
-        """
-        Rscript {params.ichor_repo}/scripts/runIchorCNA.R \
-        --id {wildcards.library_id} \
-        --WIG {input.wig} \
-        --normal "c(0.95, 0.99, 0.995, 0.999)" \
-        --genomeBuild "hg38" \
-        --ploidy "c(2)" \
-        --gcWig {params.ichor_repo}/inst/extdata/gc_hg38_1000kb.wig \
-        --mapWig {params.ichor_repo}/inst/extdata/map_hg38_1000kb.wig \
-        --centromere {params.ichor_repo}/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt \
-        --normalPanel {params.ichor_repo}/inst/extdata/HD_ULP_PoN_1Mb_median_normAutosome_mapScoreFiltered_median.rds \
-        --includeHOMD False --chrs "c(1:22)" --chrTrain "c(1:22)" \
-        --estimateNormal True --estimatePloidy True --estimateScPrevalence True \
-        --scStates "c()" --txnE 0.9999 --txnStrength 10000 --outDir {params.ichor_out_main_dir}/{wildcards.library_id}
-         """
-
-rule extract_tumor_fractions:
-    input:
-        expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.params.txt", library_id=emseq_library_ids)
-    output:
-        f"{ichor_out_main_dir}/ichor_tumor_fractions.tsv"
-    run:
-        with open(output[0], "w") as out:
-            out.write("library\ttf\n")
-            for f in input:
-                sample = f.split("/")[-1].replace(".params.txt", "")
-                with open(f) as fh:
-                    lines = fh.readlines()
-                    if len(lines) >= 2:
-                        tf = lines[1].split()[1]
-                        out.write(f"{sample}\t{tf}\n")
-
-#+end_src
-
-** Setup and administration
-*** Repository
-#+begin_src bash
-cd ~/repos/cfdna-cna
-ls
-mkdir -p tests/full-project/analysis/cna-wig
-#+end_src
-*** Git
-- Add ichor
-  #+begin_src bash
-cd ~/repos/cfdna-cna
-git clone git@github.com:broadinstitute/ichorCNA ichorCNA.v0.2.0
-cd ichorCNA.v0.2.0
-git fetch --depth 1 origin tag v0.2.0
-git checkout tags/v0.2.0
-#+end_src
-*** Configuration
-#+begin_src yaml :tangle ./config/test.yaml
-ichor-bam-dir: /mnt/data/projects/breast/analysis/cna
-ichor-wig-dir: /mnt/data/projects/breast/analysis/cna/wig
-ichor-main-out-dir: /mnt/data/projects/breast/analysis/cna/ichor
-#+end_src
-
-**** Conda
-- [[id:2fe724ad-3cd2-4598-aae2-38d468535fa7][Update conda env from github location yaml]]
-***** ext-cfdna-cna environment
-:properties:
-:header-args:yaml: :tangle ./config/ext-cfdna-cna.yaml :comments no :mkdirp yes
-:end:
-
-- Inherits
-  - https://raw.githubusercontent.com/jeszyman/basecamp/v1.0.0/basecamp_env.yaml
-  - https://raw.githubusercontent.com/jeszyman/biotools/v1.0.0/biotools_env.yaml
-
-#+begin_src yaml
-# Conda environment for cell-free DNA copy number alteration analysis
-
-#########1#########1#########1#########1#########1#########1#########1#########1
-
-
-# Note:
-#
-# This environment is intended to extend my basic environments for computing
-# and bioinformatics, which can be found in stable versions online:
-#
-# Basic computing at
-# https://raw.githubusercontent.com/jeszyman/basecamp/v1.0.0/basecamp_env.yaml
-#
-# Bioinformatics at
-# https://raw.githubusercontent.com/jeszyman/biotools/v1.0.0/biotools_env.yaml
-#
-# Run sequentially env update for basecamp, then biotools, then ext-cfdna-cna
-
-
-name: cfdna-cna
-
-channels:
-  - conda-forge
-  - bioconda
-
-# Adding 'defaults' to channel list implicitly is deprecated and will be removed in 25.3.
-
-dependencies:
-
-  - bioconductor-hmmcopy
-  # NOT hmmcopy
-#+end_src
-
-#+begin_src bash
-cd ~/repos/cfdna-cna
-conda activate base
-conda create --name ext-cfdna-cna -y
-
-curl -o /tmp/basecamp_env.yaml https://raw.githubusercontent.com/jeszyman/basecamp/v1.0.0/basecamp_env.yaml && mamba env update --name ext-cfdna-cna --file /tmp/basecamp_env.yaml
-
-curl -o /tmp/biotools_env.yaml https://raw.githubusercontent.com/jeszyman/biotools/v1.0.0/biotools_env.yaml && mamba env update --name ext-cfdna-cna --file /tmp/biotools_env.yaml
-
-mamba env update --name ext-cfdna-cna --file config/ext-cfdna-cna.yaml
-#+end_src
-
-*** [[file:config/int_test.yaml][Snakemake configuration YAML]]
-#+begin_src bash :tangle ./config/int_test.yaml
-container:
-  cfdna_wgs: "~/sing_containers/cfdna_wgs.1.0.0.sif"
-  default: "~/sing_containers/biotools.1.0.2.sif"
-
-dir:
-  cfdna_wgs_repo: "./"
-  cfdna_wgs_scripts: "workflow/scripts"
-  data: "test"
-
-threads:
-    default: "4"
-
-#+end_src
-*** Integration testing setup
-#+begin_src bash
-singularity shell --bind /mnt ~/sing_containers/cfdna_wgs.1.0.0.sif
-
-# Clear bam directory if present
-if [ -r test/bam ]; then \rm -rf test/bam; fi
-mkdir -p test/bam
-
-# Create small bam files to store in repo. Subsample real bams to ~100 Mb.
-sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib070_dedup_sorted.bam > test/bam/lib001_hg19.bam
-sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib054_dedup_sorted.bam > test/bam/lib002_hg19.bam
-sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_ACAC_extract_ds20.bam > test/bam/lib003_hg38.bam
-sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_ATCG_extract_ds20.bam > test/bam/lib004_hg38.bam
-
-sambamba view -s 0.01 -f bam -t 4 /mnt/ris/aadel/mpnst/bam/cfdna_wgs/ds/lib105_ds10.bam > test/bam/lib005.bam
-sambamba view -s 0.01 -f bam -t 4 /mnt/ris/aadel/mpnst/bam/cfdna_wgs/ds/lib205_ds10.bam > test/bam/lib006.bam
-
-
-
-for file in test/bam/*.bam; do samtools index $file; done
-
 #+end_src
 ** Methods
 *** Filter alignment
@@ -986,6 +810,112 @@ rule hg19_ichor:
          --outDir {config[ichor_hg19_dir]}
         """
 #+end_src
+** Workflows
+*** Test
+#+begin_src snakemake
+# import pandas as pd
+# import os
+# from tabulate import tabulate
+# import sys
+
+
+# ichor_bam_dir = config["ichor-bam-dir"]
+# ichor_wig_dir = config["ichor-wig-dir"]
+# ichor_out_main_dir = config["ichor-main-out-dir"]
+
+# library_id = "NH_39_L1"
+
+
+# rule all:
+#     input:
+#         expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
+#                library_id=["NH_39_L1"]),
+
+#+end_src
+
+*** CNA
+- Snakemake
+  #+begin_src snakemake :tangle ./workflows/cna.smk
+# Will follow symlinks
+rule ichor_index_bam_check:
+    conda:
+        "../config/cfdna-cna-conda-env.yaml"
+    input:
+        bam = ancient(f"{ichor_bam_dir}/{{library_id}}.bam"),
+    output:
+        bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
+    shell:
+        """
+        samtools index -@ 8 {input.bam} {output.bai}
+        """
+
+rule make_wig:
+    conda:
+        "../config/cfdna-cna-conda-env.yaml"
+    input:
+        bam = f"{ichor_bam_dir}/{{library_id}}.bam",
+        bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
+    output:
+        wig = f"{ichor_wig_dir}/{{library_id}}.wig",
+    params:
+        window = "1000000",
+        quality = 20,
+    shell:
+        """
+        mkdir -p "{ichor_wig_dir}"
+        readCounter \
+        --window {params.window} \
+        --quality {params.quality} \
+	--chromosome "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y" \
+        {input} > {output}
+        """
+
+rule run_ichor:
+    conda:
+        "../config/cfdna-cna-conda-env.yaml"
+    input:
+        wig = f"{ichor_wig_dir}/{{library_id}}.wig"
+    output:
+        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
+        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.params.txt",
+    params:
+        ichor_out_main_dir = ichor_out_main_dir,
+        ichor_repo = ichor_repo,
+    shell:
+        """
+        Rscript {params.ichor_repo}/scripts/runIchorCNA.R \
+        --id {wildcards.library_id} \
+        --WIG {input.wig} \
+        --normal "c(0.95, 0.99, 0.995, 0.999)" \
+        --genomeBuild "hg38" \
+        --ploidy "c(2)" \
+        --gcWig {params.ichor_repo}/inst/extdata/gc_hg38_1000kb.wig \
+        --mapWig {params.ichor_repo}/inst/extdata/map_hg38_1000kb.wig \
+        --centromere {params.ichor_repo}/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt \
+        --normalPanel {params.ichor_repo}/inst/extdata/HD_ULP_PoN_1Mb_median_normAutosome_mapScoreFiltered_median.rds \
+        --includeHOMD False --chrs "c(1:22)" --chrTrain "c(1:22)" \
+        --estimateNormal True --estimatePloidy True --estimateScPrevalence True \
+        --scStates "c()" --txnE 0.9999 --txnStrength 10000 --outDir {params.ichor_out_main_dir}/{wildcards.library_id}
+         """
+
+rule extract_tumor_fractions:
+    input:
+        expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.params.txt", library_id=emseq_library_ids)
+    output:
+        f"{ichor_out_main_dir}/ichor_tumor_fractions.tsv"
+    run:
+        with open(output[0], "w") as out:
+            out.write("library\ttf\n")
+            for f in input:
+                sample = f.split("/")[-1].replace(".params.txt", "")
+                with open(f) as fh:
+                    lines = fh.readlines()
+                    if len(lines) >= 2:
+                        tf = lines[1].split()[1]
+                        out.write(f"{sample}\t{tf}\n")
+
+#+end_src
+
 ** Testing
 *** INPROCESS Integration testing                                       :smk:
 :PROPERTIES:
@@ -1035,6 +965,64 @@ include: "cfdna_wgs_cna.smk"
 #+end_src
 ** Reference
 ** Ideas
+#+begin_src python :tangle ./scripts/aggregate_logR.py
+#!/usr/bin/env python3
+
+import os
+import glob
+import pandas as pd
+from functools import reduce
+import argparse
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Aggregate logR values from ichorCNA .cna.seg files.")
+    parser.add_argument("--seg_dir", required=True, help="Path to parent directory containing per-sample .cna.seg files.")
+    parser.add_argument("--output_tsv", required=True, help="Path to write aggregated TSV output.")
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+
+    seg_files = glob.glob(os.path.join(args.seg_dir, "*/", "*.cna.seg"))
+    if not seg_files:
+        raise FileNotFoundError(f"No .cna.seg files found in {args.seg_dir}")
+
+    dfs = []
+    for f in seg_files:
+        sample_id = os.path.basename(f).split(".")[0]
+        try:
+            df = pd.read_csv(f, sep="\t", usecols=["chr", "start", "end", f"{sample_id}.logR"])
+        except ValueError as e:
+            raise ValueError(f"Expected column '{sample_id}.logR' not found in {f}") from e
+        df = df.rename(columns={f"{sample_id}.logR": sample_id})
+        dfs.append(df)
+
+    merged = reduce(lambda left, right: pd.merge(left, right, on=["chr", "start", "end"], how="outer"), dfs)
+    merged = merged.sort_values(by=["chr", "start", "end"])
+    merged.to_csv(args.output_tsv, sep="\t", index=False)
+
+
+if __name__ == "__main__":
+    main()
+
+#+end_src
+#+begin_src bash :tangle ./config/int_test.yaml
+container:
+  cfdna_wgs: "~/sing_containers/cfdna_wgs.1.0.0.sif"
+  default: "~/sing_containers/biotools.1.0.2.sif"
+
+dir:
+  cfdna_wgs_repo: "./"
+  cfdna_wgs_scripts: "workflow/scripts"
+  data: "test"
+
+threads:
+    default: "4"
+
+#+end_src
+
 - window size vs tumor fraction optimization
 - biocparallel? for ichor sections
 - https://mail.google.com/mail/u/0/#inbox/FMfcgzGmtrMStSdxMHbXDpqGDVTrjMpl
@@ -4019,4 +4007,26 @@ counts <- keepChr(counts, chrs)
     }
   return(list(counts = counts, gender = gender))
 }
+#+end_src
+*** Integration testing setup
+#+begin_src bash
+singularity shell --bind /mnt ~/sing_containers/cfdna_wgs.1.0.0.sif
+
+# Clear bam directory if present
+if [ -r test/bam ]; then \rm -rf test/bam; fi
+mkdir -p test/bam
+
+# Create small bam files to store in repo. Subsample real bams to ~100 Mb.
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib070_dedup_sorted.bam > test/bam/lib001_hg19.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/bam/lib054_dedup_sorted.bam > test/bam/lib002_hg19.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_ACAC_extract_ds20.bam > test/bam/lib003_hg38.bam
+sambamba view -s .005 -f bam -t 36 /mnt/ris/aadel/mpnst/test/bam/new_HiSeq15_L002001_ATCG_extract_ds20.bam > test/bam/lib004_hg38.bam
+
+sambamba view -s 0.01 -f bam -t 4 /mnt/ris/aadel/mpnst/bam/cfdna_wgs/ds/lib105_ds10.bam > test/bam/lib005.bam
+sambamba view -s 0.01 -f bam -t 4 /mnt/ris/aadel/mpnst/bam/cfdna_wgs/ds/lib205_ds10.bam > test/bam/lib006.bam
+
+
+
+for file in test/bam/*.bam; do samtools index $file; done
+
 #+end_src
