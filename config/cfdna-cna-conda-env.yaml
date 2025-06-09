@@ -28,4 +28,8 @@ channels:
 dependencies:
   - samtools
   - bioconductor-hmmcopy
-  # NOT hmmcopy
+  - hmmcopy
+  - r-argparse
+  - r-optparse
+  - bioconductor-genomicranges
+  - bioconductor-genomeinfodb
