@@ -15,7 +15,7 @@
 *** Conda environmental YAMLs
 **** CNA
 :properties:
-:header-args:yaml: :tangle ./config/ext-cfdna-cna.yaml :comments no :mkdirp yes
+:header-args:yaml: :tangle ./config/cfdna-cna-conda-env.yaml :comments no :mkdirp yes
 :end:
 
 #+begin_src yaml
@@ -841,9 +841,9 @@ rule ichor_index_bam_check:
     conda:
         "../config/cfdna-cna-conda-env.yaml"
     input:
-        bam = ancient(f"{ichor_bam_dir}/{{library_id}}.bam"),
+        bam = ancient(f"{data_dir}/analysis/cfdna_cna/bams/{{library_id}}.bam"),
     output:
-        bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
+        bai = f"{data_dir}/analysis/cfdna_cna/bams/{{library_id}}.bam.bai",
     shell:
         """
         samtools index -@ 8 {input.bam} {output.bai}
@@ -853,10 +853,10 @@ rule make_wig:
     conda:
         "../config/cfdna-cna-conda-env.yaml"
     input:
-        bam = f"{ichor_bam_dir}/{{library_id}}.bam",
-        bai = f"{ichor_bam_dir}/{{library_id}}.bam.bai",
+        bam = f"{data_dir}/analysis/cfdna_cna/bams/{{library_id}}.bam",
+        bai = f"{data_dir}/analysis/cfdna_cna/bams/{{library_id}}.bam.bai",
     output:
-        wig = f"{ichor_wig_dir}/{{library_id}}.wig",
+        wig = f"{data_dir}/analysis/cfdna_cna/wigs/{{library_id}}.wig",
     params:
         window = "1000000",
         quality = 20,
@@ -874,12 +874,12 @@ rule run_ichor:
     conda:
         "../config/cfdna-cna-conda-env.yaml"
     input:
-        wig = f"{ichor_wig_dir}/{{library_id}}.wig"
+        wig = f"{data_dir}/analysis/cfdna_cna/wigs/{{library_id}}.wig"
     output:
-        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.cna.seg",
-        f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.params.txt",
+        f"{data_dir}/analysis/cfdna_cna/ichor/{{library_id}}/{{library_id}}.cna.seg",
+        f"{data_dir}/analysis/cfdna_cna/ichor/{{library_id}}.params.txt",
     params:
-        ichor_out_main_dir = ichor_out_main_dir,
+        ichor_out_main_dir = f"{data_dir}/analysis/cfdna_cna/ichor",
         ichor_repo = ichor_repo,
     shell:
         """
@@ -900,9 +900,9 @@ rule run_ichor:
 
 rule extract_tumor_fractions:
     input:
-        expand(f"{ichor_out_main_dir}/{{library_id}}/{{library_id}}.params.txt", library_id=emseq_library_ids)
+        expand(f"{data_dir}/analysis/cfdna_cna/ichor/{{library_id}}/{{library_id}}.params.txt", library_id=cfdna_cna_library_ids)
     output:
-        f"{ichor_out_main_dir}/ichor_tumor_fractions.tsv"
+        f"{data_dir}/analysis/cfdna_cna/ichor/ichor_tumor_fractions.tsv"
     run:
         with open(output[0], "w") as out:
             out.write("library\ttf\n")
