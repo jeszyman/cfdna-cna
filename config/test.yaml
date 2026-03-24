@@ -1,7 +1,61 @@
 # Test configuration for cfdna-cna
-# Used by CI/CD and local integration testing.
-# Mirrors common.yaml structure but scoped to test data.
+# DAG/integration testing with chr22 data.
+# ichorCNA and Fragle outputs are biologically meaningless on chr22-only.
 
 threads: 2
 data-dir: ${HOME}/repos/cfdna-cna/tests/full
 repo-dir: ${HOME}/repos/cfdna-cna
+
+conda:
+  ichor: ${HOME}/repos/cfdna-cna/config/ichor-conda-env.yaml
+  fragle: ${HOME}/repos/cfdna-cna/config/fragle-conda-env.yaml
+
+directories:
+  inputs: ${HOME}/repos/cfdna-cna/tests/full/inputs
+  cfdna-cna: ${HOME}/repos/cfdna-cna/tests/full
+  logs: ${HOME}/repos/cfdna-cna/tests/logs
+  benchmark: ${HOME}/repos/cfdna-cna/tests/benchmark
+
+sample-tsv-path: ${HOME}/repos/cfdna-cna/data/test-samples.tsv
+
+# Test with chr22 only
+readcounter-chromosomes: "22"
+ichor-chromosomes: "c(22)"
+ichor-chrs-normalize: "c(22)"
+
+genome-build: hg38
+genome-style: NCBI
+
+ichor-repo: ${HOME}/repos/ichorCNA-patched
+
+windows:
+  - "90_150"
+
+pon:
+  nopon:
+    prebuilt-path: null
+  custom:
+    normal-samples: true
+
+ichor-presets:
+  default-low-input:
+    normal: "c(0.95, 0.99, 0.995, 0.999)"
+    ploidy: "c(2)"
+    maxCN: 3
+    includeHOMD: FALSE
+    txnE: 0.9999
+    txnStrength: 10000
+    estimateNormal: TRUE
+    estimatePloidy: TRUE
+    estimateScPrevalence: FALSE
+    scStates: "c()"
+
+fragle:
+  repo-path: ${HOME}/repos/cfdna-cna/resources/FRAGLE
+  mode: R
+  threads: 2
+
+ichor-ref:
+  gc-wig: ${HOME}/repos/ichorCNA-patched/inst/extdata/gc_hg38_1000kb.wig
+  map-wig: ${HOME}/repos/ichorCNA-patched/inst/extdata/map_hg38_1000kb.wig
+  centromere: ${HOME}/repos/ichorCNA-patched/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt

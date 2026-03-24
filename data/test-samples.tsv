@@ -1,0 +1,3 @@
+library_id	bam_path	sample_type
+lib001	${HOME}/repos/cfdna-cna/tests/full/inputs/lib001.chr22.bam	normal
+lib002	${HOME}/repos/cfdna-cna/tests/full/inputs/lib002.chr22.bam	tumor

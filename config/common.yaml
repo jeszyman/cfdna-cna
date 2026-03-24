@@ -1,9 +1,77 @@
 # Common configuration for cfdna-cna
-# Edit after scaffold to match your project's data layout.
+# Shared defaults for cfDNA copy number analysis pipeline.
+
+genome-build: hg38
+genome-style: NCBI
+
+# Chromosome lists — two formats for different tools
+readcounter-chromosomes: "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X"
+ichor-chromosomes: "c(1:22, 'X')"
+ichor-chrs-normalize: "c(1:22)"
+
+ichor-repo: ${HOME}/repos/ichorCNA-patched
 
 threads: 8
 data-dir: /mnt/data/projects/cfdna-cna
 repo-dir: ${HOME}/repos/cfdna-cna
 
 conda:
-  # toolname: ${HOME}/repos/cfdna-cna/config/toolname-conda-env.yaml
+  ichor: ${HOME}/repos/cfdna-cna/config/ichor-conda-env.yaml
+  fragle: ${HOME}/repos/cfdna-cna/config/fragle-conda-env.yaml
+
+directories:
+  inputs: /mnt/data/projects/cfdna-cna/inputs
+  cfdna-cna: /mnt/data/projects/cfdna-cna
+  logs: /mnt/data/projects/cfdna-cna/logs
+  benchmark: /mnt/data/projects/cfdna-cna/benchmark
+
+sample-tsv-path: ${HOME}/repos/cfdna-cna/data/samples.tsv
+
+# Fragment length windows (full is always added automatically)
+windows:
+  - "90_150"
+  - "55_130"
+
+# Panel of Normals
+pon:
+  nopon:
+    prebuilt-path: null
+  cfdna-wgs:
+    prebuilt-path: /mnt/data/projects/nf1/cfdna-cna/pon/kh_cfdna_median.rds
+  custom:
+    normal-samples: true
+
+# ichorCNA presets (YAML anchors for inheritance)
+ichor-presets:
+  default-low-input: &ichor-default
+    normal: "c(0.95, 0.99, 0.995, 0.999)"
+    ploidy: "c(2)"
+    maxCN: 3
+    includeHOMD: FALSE
+    txnE: 0.9999
+    txnStrength: 10000
+    estimateNormal: TRUE
+    estimatePloidy: TRUE
+    estimateScPrevalence: FALSE
+    scStates: "c()"
+  aggressive:
+    <<: *ichor-default
+    txnE: 0.9999999
+    txnStrength: 10000000
+    maxCN: 4
+  permissive:
+    <<: *ichor-default
+    normal: "c(0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99)"
+    maxCN: 7
+
+# Fragle settings
+fragle:
+  repo-path: ${HOME}/repos/cfdna-cna/resources/FRAGLE
+  mode: R
+  threads: 8
+
+# ichorCNA reference files
+ichor-ref:
+  gc-wig: ${HOME}/repos/ichorCNA-patched/inst/extdata/gc_hg38_1000kb.wig
+  map-wig: ${HOME}/repos/ichorCNA-patched/inst/extdata/map_hg38_1000kb.wig
+  centromere: ${HOME}/repos/ichorCNA-patched/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt
