@@ -18,7 +18,8 @@ directories:
 
 sample-tsv-path: ${HOME}/repos/cfdna-cna/data/test-samples.tsv
 
-# Test with chr22 only — BAMs use UCSC-style names (chr22)
+# Test BAMs are chr22-only. Use chr22-subset reference WIGs so ichorCNA
+# has matching dimensions and enough bins for GC loess correction.
 readcounter-chromosomes: "chr22"
 ichor-chromosomes: "c('chr22')"
 ichor-chrs-normalize: "c('chr22')"
@@ -56,6 +57,6 @@ fragle:
   threads: 2
 
 ichor-ref:
-  gc-wig: ${HOME}/repos/ichorCNA-patched/inst/extdata/gc_hg38_1000kb.wig
-  map-wig: ${HOME}/repos/ichorCNA-patched/inst/extdata/map_hg38_1000kb.wig
+  gc-wig: ${HOME}/repos/cfdna-cna/tests/full/inputs/gc_hg38_1000kb_chr22.wig
+  map-wig: ${HOME}/repos/cfdna-cna/tests/full/inputs/map_hg38_1000kb_chr22.wig
   centromere: ${HOME}/repos/ichorCNA-patched/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt
