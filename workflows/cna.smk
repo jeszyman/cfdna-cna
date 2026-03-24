@@ -44,9 +44,9 @@ rule cna_fragment_filter:
     message: "Fragment filtering {wildcards.library} to {wildcards.window}"
     shell:
         """
-        samtools view -h -@ {threads} \
-          -e 'abs(tlen) >= {params.frag_min} && abs(tlen) <= {params.frag_max}' \
-          {input.bam} | \
+        samtools view -h -@ {threads} {input.bam} | \
+          awk -v min={params.frag_min} -v max={params.frag_max} \
+          'BEGIN{{OFS="\t"}} /^@/{{print;next}} {{t=$9; if(t<0)t=-t; if(t>=min && t<=max)print}}' | \
           samtools sort -@ {threads} -o {output.bam} 2> {log}
         samtools index {output.bam} 2>> {log}
         """

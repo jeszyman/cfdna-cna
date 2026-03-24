@@ -18,13 +18,13 @@ directories:
 
 sample-tsv-path: ${HOME}/repos/cfdna-cna/data/test-samples.tsv
 
-# Test with chr22 only
-readcounter-chromosomes: "22"
-ichor-chromosomes: "c(22)"
-ichor-chrs-normalize: "c(22)"
+# Test with chr22 only — BAMs use UCSC-style names (chr22)
+readcounter-chromosomes: "chr22"
+ichor-chromosomes: "c('chr22')"
+ichor-chrs-normalize: "c('chr22')"
 
 genome-build: hg38
-genome-style: NCBI
+genome-style: UCSC
 
 ichor-repo: ${HOME}/repos/ichorCNA-patched
 
