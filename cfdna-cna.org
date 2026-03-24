@@ -5,346 +5,107 @@
 :export_file_name: README
 :END:
 ** Project overview
+cfDNA copy number analysis biopipe using ichorCNA and Fragle. Processes a configurable matrix of {library} x {window} x {pon} x {preset} combinations for comprehensive CNA profiling from cell-free DNA.
 ** Key files
+- =workflows/cna.smk= — Main modular snakefile (all rules)
+- =workflows/test.smk= — Test wrapper with config loading and rule all
+- =config/common.yaml= — Production config with full parameter matrix
+- =config/test.yaml= — Test config (chr22 only, minimal matrix)
+- =scripts/= — R and Python scripts for TF extraction, aggregation, visualization
 ** Directory structure
 #+begin_example
 -- Main
    |-- config
+   |-- data
    |-- resources
+   |   |-- FRAGLE (cloned, gitignored)
    |-- scripts
    |-- tests
      |-- full
        |-- inputs
-   |-- tools
-     |-- shell
    |-- workflows
 #+end_example
 ** Change log
+- [2026-03-23] v3: Complete rewrite as biopipe with ichorCNA + Fragle matrix
 - [2026-03-12] Initial scaffold from biopipe template
 ** Working in this repo
 - Edit =cfdna-cna.org= for all code changes (literate programming)
 - Tangle to generate workflow/config/script files
-- Run =tools/shell/org_update.sh= for tangle + README export + git workflow
+- Dry-run: =conda run -n basecamp snakemake -s workflows/test.smk --use-conda --conda-frontend conda --dry-run=
 * Repository setup and administration
-** Org update
-#+begin_src bash :tangle ./tools/shell/org_update.sh :tangle-mode (identity #o755)
-#!/usr/bin/env bash
-set -euo pipefail
+** Conda environments
+*** ichorCNA (R-based)
+R 4.4+, HMMcopy readCounter, samtools, tidyverse, ggplot2, pheatmap. Used for all ichorCNA rules and visualization.
 
-source ~/repos/basecamp/lib/basecamp_functions.sh
+*** Fragle (Python-based)
+Python 3.8-3.10, PyTorch CPU, scikit-learn 1.2.2, pysam, samtools. Used only for the Fragle rule.
 
-REPOS=(cfdna-cna)
+** Configuration
+*** common.yaml
+Production configuration with full parameter matrix: 3 windows (90_150, 55_130, full), 3 PoN configs (nopon, cfdna-wgs prebuilt, custom from normals), 3 ichorCNA presets (default-low-input, aggressive, permissive).
 
-REPO_DIR=~/repos/cfdna-cna
-README_ORG="$REPO_DIR/cfdna-cna.org"
-README_NODE=REPLACE_WITH_README_ID
-README_EXPORT=~/repos/emacs/scripts/emacs_export_header_to_markdown.py
+*** test.yaml
+Test-scoped configuration: chr22 only, 2 windows (90_150, full), 2 PoN configs (nopon, custom), 1 preset (default-low-input).
 
-save_in_emacs() {
-  if command -v emacsclient >/dev/null 2>&1 && emacsclient -e "(progn t)" >/dev/null 2>&1; then
-    emacsclient -e "(save-some-buffers t)" >/dev/null
-  fi
-}
+* cfDNA CNA workflow
+** Background
+cfDNA copy number analysis uses read depth from shallow whole-genome sequencing to infer somatic copy number aberrations. ichorCNA is the standard tool for estimating tumor fraction and CNA from cfDNA. Fragle provides an orthogonal ctDNA fraction estimate from fragment length distributions.
 
-update_readme() {
-  pushd "$REPO_DIR" >/dev/null
-  python3 "$README_EXPORT" --org_file "$README_ORG" --node_id "$README_NODE"
-  popd >/dev/null
-}
+Fragment length filtering enriches for tumor-derived cfDNA (shorter fragments), potentially improving sensitivity. This pipeline systematically evaluates the effect of different fragment windows on CNA calling.
 
-tangle_repo_org() {
-  local repo=$1
-  local org_file=~/repos/"$repo"/"$repo".org
-  if [[ -f "$org_file" ]]; then
-    tangle "$org_file" || { echo "tangle failed for $repo"; return 1; }
-  fi
-}
+** Fragment length filtering
+Two rules handle fragment filtering:
+- =cna_fragment_filter=: Filters BAM by TLEN using samtools view expression filter
+- =cna_fragment_filter_full=: Symlinks original BAM for the =full= (unfiltered) window
 
-git_update_repo() {
-  local repo=$1
-  pushd ~/repos/"$repo" >/dev/null || return 1
-  if ! output=$(git_wkflow_up 2>&1); then
-    echo "$output"
-  else
-    echo -e "$(date)\n$output"
-  fi
-  popd >/dev/null
-}
+The =full= window rule has priority via =ruleorder= to avoid ambiguity.
 
-main() {
-  save_in_emacs
-  for repo in "${REPOS[@]}"; do
-    tangle_repo_org "$repo" || true
-  done
-  update_readme
-  save_in_emacs
-  for repo in "${REPOS[@]}"; do
-    git_update_repo "$repo" || true
-  done
-}
+** BAM to WIG
+=cna_bam_to_wig= uses HMMcopy's =readCounter= to generate 1Mb-binned WIG files from filtered BAMs. Chromosome list is configurable (NCBI or UCSC style).
 
-main "$@"
-#+end_src
-** Tool to get in-repo test data
-#+begin_src bash :tangle ./tools/get_test_data.sh :tangle-mode (identity #o755)
-#!/usr/bin/env bash
-# get_test_data.sh — fetch or generate test input data
-# Customize this script for your pipeline's specific test inputs.
-set -euo pipefail
+** Panel of normals
+Two rules handle PoN generation:
+- =cna_pon_wig_list=: Aggregates normal sample WIG paths into a text file
+- =cna_build_pon=: Runs =createPanelOfNormals.R= from ichorCNA-patched
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_DIR="$(dirname "$SCRIPT_DIR")"
-cd "$REPO_DIR" || exit 1
+Custom PoNs are built per-window to avoid calibration mismatch with fragment-filtered tumor samples.
 
-TEST_DIR="${REPO_DIR}/tests/full/inputs"
-mkdir -p "${TEST_DIR}"
+** ichorCNA
+=cna_run_ichor= runs ichorCNA with configurable presets and conditional PoN. The PoN input function returns an empty list for =nopon=, causing the =--normalPanel= flag to be omitted. Pre-built PoN paths are used directly; custom PoNs are resolved as DAG dependencies.
 
-echo "TODO: Add test data acquisition commands here."
-echo "See emseq/tools/get_test_data.sh for a reference implementation."
-echo "Test data dir: ${TEST_DIR}"
-#+end_src
-** GitHub tests
-*** test-data
-#+begin_src yaml :tangle ./.github/workflows/test-data.yaml :mkdirp yes
-name: test-data
+** Fragle
+=cna_run_fragle= runs Fragle ctDNA quantification on filtered BAMs. Output is per {library}.{window} only (no PoN/preset dimension since Fragle is independent of ichorCNA parameters).
 
-on:
-  pull_request:
-    paths:
-      - "tools/get_test_data.sh"
-      - "tests/**"
-      - "config/cfdna-cna-conda-env.yaml"
-      - ".github/workflows/test-data.yaml"
-  schedule:
-    - cron: "0 4 * * 1"
-  workflow_dispatch: {}
+** TF extraction and aggregation
+- =cna_extract_ichor_tf=: Parses ichorCNA =.params.txt= to extract tumor fraction and ploidy
+- =cna_aggregate_results=: Merges all ichorCNA TF TSVs and Fragle CSVs into a single comparison table
 
-concurrency:
-  group: test-data-${{ github.ref }}
-  cancel-in-progress: true
+** Visualization
+Four visualization rules produce PDF and PNG outputs:
+1. TF comparison plot (ichorCNA vs Fragle, faceted by window)
+2. LogR heatmap (genomic bins x samples, per pon/preset)
+3. Window concordance (TF across windows per sample)
+4. Fragle summary (ctDNA fraction per sample per window)
 
-permissions:
-  contents: read
-
-defaults:
-  run:
-    shell: bash -l {0}
-
-jobs:
-  run:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up micromamba
-        uses: mamba-org/setup-micromamba@v1
-        with:
-          environment-file: config/cfdna-cna-conda-env.yaml
-          environment-name: cfdna-cna
-          cache-environment: true
-
-      - name: Run test data script
-        run: |
-          set -euo pipefail
-          chmod +x tools/get_test_data.sh
-          micromamba run -n cfdna-cna ./tools/get_test_data.sh
-#+end_src
-*** smk-dry
-#+begin_src yaml :tangle ./.github/workflows/smk-dry.yaml :mkdirp yes
-name: smk-dry
-
-on:
-  pull_request:
-    paths:
-      - "workflows/**"
-      - "config/**"
-      - "scripts/**"
-      - ".github/workflows/smk-dry.yaml"
-  schedule:
-    - cron: "0 4 * * 1"
-  workflow_dispatch: {}
-
-concurrency:
-  group: smk-dry-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
-
-jobs:
-  smoke:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up micromamba
-        uses: mamba-org/setup-micromamba@v1
-        with:
-          environment-file: config/cfdna-cna-conda-env.yaml
-          environment-name: cfdna-cna
-          cache-environment: true
-
-      - name: Verify required files
-        run: |
-          set -euo pipefail
-          test -f config/cfdna-cna-conda-env.yaml
-          test -f workflows/test.smk
-          test -f config/test.yaml
-
-      - name: Snakemake dry-run
-        run: |
-          micromamba run -n cfdna-cna snakemake \
-            -s workflows/test.smk \
-            --configfile config/test.yaml \
-            --cores 4 \
-            --dry-run \
-            --printshellcmds \
-            --rerun-incomplete
-#+end_src
-*** smk-run
-#+begin_src yaml :tangle ./.github/workflows/smk-run.yaml :mkdirp yes
-name: smk-run
-
-on:
-  pull_request:
-    paths:
-      - "workflows/**"
-      - "config/**"
-      - "scripts/**"
-      - ".github/workflows/smk-run.yaml"
-  schedule:
-    - cron: "0 5 * * 1"
-  workflow_dispatch: {}
-
-concurrency:
-  group: smk-run-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
-
-jobs:
-  run:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up micromamba
-        uses: mamba-org/setup-micromamba@v1
-        with:
-          environment-file: config/cfdna-cna-conda-env.yaml
-          environment-name: cfdna-cna
-          cache-environment: true
-
-      - name: Verify required files
-        run: |
-          set -euo pipefail
-          test -f config/cfdna-cna-conda-env.yaml
-          test -f workflows/test.smk
-          test -f config/test.yaml
-
-      - name: Snakemake run
-        run: |
-          micromamba run -n cfdna-cna snakemake \
-            -s workflows/test.smk \
-            --configfile config/test.yaml \
-            --cores 4 \
-            --printshellcmds \
-            --rerun-incomplete \
-            --use-conda
-#+end_src
-* Conda environmental YAMLs
-** cfdna-cna
-:PROPERTIES:
-:header-args:yaml: :tangle ./config/cfdna-cna-conda-env.yaml :comments no
-:END:
-#+begin_src yaml
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - python>=3.10
-  - snakemake>=8.0
-  # Add pipeline-specific tools below:
-  # - samtools
-  # - bedtools
-#+end_src
-* cfdna-cna processing
-:PROPERTIES:
-:header-args:snakemake: :tangle ./workflows/cfdna-cna.smk
-:END:
-** Preamble
-#+begin_src snakemake
-import os
-import pandas as pd
-import logging
-
-# =============================================================================
-# PREAMBLE
-# =============================================================================
-
-configfile: "config/test.yaml"
-
-def resolve_config_paths(config_dict):
-    for k, v in config_dict.items():
-        if isinstance(v, str):
-            config_dict[k] = os.path.expandvars(os.path.expanduser(v))
-        elif isinstance(v, dict):
-            resolve_config_paths(v)
-        elif isinstance(v, list):
-            config_dict[k] = [os.path.expandvars(os.path.expanduser(i)) if isinstance(i, str) else i for i in v]
-
-resolve_config_paths(config)
-
-# --- Directory constants (D_ prefix: absolute paths from config) ---
-D_cfdna-cna = config["data-dir"]
-D_LOGS = os.path.join(D_cfdna-cna, "logs")
-D_BENCHMARK = os.path.join(D_cfdna-cna, "benchmark")
-
-# --- Conda environment paths (ENV_ prefix) ---
-# ENV_TOOL = config["conda"]["toolname"]
-
-# --- Sample Table Convention ---
-# If this workflow uses sample metadata, define a SampleTable class here.
-# Standard interface:
-#   - __init__(self, tsv_path, selected_ids=None)
-#   - .library_ids property -> sorted list of unique IDs
-#   - .r1_map / .r2_map -> dict(library_id -> basename)
-# See rna-seq or frag repos for minimal examples,
-# mpnst or mrd for complex (lane-aware, cloud-path) examples.
-#+end_src
 * Testing
 ** Test data provenance
-Document the test data source here: sequencing type (WGS, EM-seq, targeted), data origin (SRA accessions, URLs), sample metadata (cohort labels, library IDs), reference genome subset, and what is committed to the repo vs git-ignored.
+Chr22-only BAMs from the frag repo test data. These provide DAG/integration testing only --- ichorCNA and Fragle produce biologically meaningless results on single-chromosome data.
 
-** Test configuration
-#+begin_src yaml :tangle ./config/test.yaml
-# Test configuration for cfdna-cna
-# Used by CI/CD and local integration testing.
+** Test matrix
+With test.yaml: 1 tumor (lib002) x 2 windows (90_150, full) x 2 PoN (nopon, custom) x 1 preset (default-low-input) = 4 ichorCNA jobs, 2 Fragle jobs, plus PoN builds, aggregation, and visualizations (29 total jobs).
 
-threads: 2
-data-dir: tests/full
-repo-dir: .
+* Phase 2
+** WisecondorX (future)
+Z-score-based CNA caller. Would add =cna_run_wisecondorx= rule producing =.bed= CNA segments. New conda env (Python). Parallel output path under ={D_CNA}/wisecondorx/=.
 
-# Add sample IDs, reference paths, and experiment maps here.
-# See emseq config/test.yaml for a reference structure.
-#+end_src
-** Test snakefile
-#+begin_src snakemake :tangle ./workflows/test.smk
-# Test wrapper Snakefile for cfdna-cna
-# Includes the main workflow and defines rule all for test execution.
+** BayesCNA (future)
+Bayesian changepoint detection for low-purity samples. Would add =cna_run_bayescna= rule. R-based, could share ichor env.
 
-include: "cfdna-cna.smk"
+* Calibration notes
+** PoN/window mismatch warning
+A panel of normals built on unfiltered reads should not be used with fragment-filtered tumor BAMs, and vice versa. The pipeline enforces this by building custom PoNs per-window. Pre-built PoNs are the user's responsibility to match.
 
-rule all:
-    input:
-        # Add expected test outputs here
-        [],
-#+end_src
-* Data
-Document sample metadata, data provenance, and data model here.
-* Reference
+** ichorCNA default PoN
+The shipped =HD_ULP_PoN_1Mb_median= was built on unfiltered reads. Using it with fragment-filtered BAMs introduces systematic bias. Recommend =nopon= or custom PoN for filtered windows.
+
 * Ideas
