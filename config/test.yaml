@@ -1,0 +1,7 @@
+# Test configuration for cfdna-cna
+# Used by CI/CD and local integration testing.
+# Mirrors common.yaml structure but scoped to test data.
+
+threads: 2
+data-dir: ${HOME}/repos/cfdna-cna/tests/full
+repo-dir: ${HOME}/repos/cfdna-cna

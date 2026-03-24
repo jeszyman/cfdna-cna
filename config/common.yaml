@@ -1,0 +1,9 @@
+# Common configuration for cfdna-cna
+# Edit after scaffold to match your project's data layout.
+
+threads: 8
+data-dir: /mnt/data/projects/cfdna-cna
+repo-dir: ${HOME}/repos/cfdna-cna
+
+conda:
+  # toolname: ${HOME}/repos/cfdna-cna/config/toolname-conda-env.yaml
