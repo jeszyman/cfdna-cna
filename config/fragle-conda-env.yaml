@@ -1,0 +1,12 @@
+# Conda environment for FRAGLE (Python-based)
+channels:
+  - conda-forge
+
+dependencies:
+  - python>=3.8,<3.11
+  - pytorch-cpu
+  - scikit-learn=1.2.2
+  - pandas
+  - numpy
+  - pysam
+  - samtools
