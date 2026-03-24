@@ -1,8 +1,9 @@
-#+title: cfdna-cna Bioinformatics Processes
+#+title: cfDNA Copy Number Analysis
 #+author: Jeffrey Szymanski
+#+property: header-args :mkdirp yes
 * README
 :PROPERTIES:
-:export_file_name: README
+:EXPORT_FILE_NAME: README
 :END:
 ** Project overview
 cfDNA copy number analysis biopipe using ichorCNA and Fragle. Processes a configurable matrix of {library} x {window} x {pon} x {preset} combinations for comprehensive CNA profiling from cell-free DNA.
@@ -26,8 +27,7 @@ cfDNA copy number analysis biopipe using ichorCNA and Fragle. Processes a config
    |-- workflows
 #+end_example
 ** Change log
-- [2026-03-23] v3: Complete rewrite as biopipe with ichorCNA + Fragle matrix
-- [2026-03-12] Initial scaffold from biopipe template
+- [2026-03-24] v3: Complete rewrite as biopipe with ichorCNA + Fragle matrix
 ** Working in this repo
 - Edit =cfdna-cna.org= for all code changes (literate programming)
 - Tangle to generate workflow/config/script files
@@ -35,77 +35,965 @@ cfDNA copy number analysis biopipe using ichorCNA and Fragle. Processes a config
 * Repository setup and administration
 ** Conda environments
 *** ichorCNA (R-based)
+:PROPERTIES:
+:header-args:yaml: :tangle config/ichor-conda-env.yaml
+:END:
+
 R 4.4+, HMMcopy readCounter, samtools, tidyverse, ggplot2, pheatmap. Used for all ichorCNA rules and visualization.
 
+#+begin_src yaml
+# Conda environment for ichorCNA and visualization (R-based)
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - r-base>=4.4
+  - bioconductor-hmmcopy
+  - hmmcopy
+  - bioconductor-genomicranges
+  - bioconductor-genomeinfodb
+  - r-optparse
+  - r-plyr
+  - samtools
+  - r-tidyverse
+  - r-data.table
+  - r-ggplot2
+  - r-pheatmap
+#+end_src
+
 *** Fragle (Python-based)
+:PROPERTIES:
+:header-args:yaml: :tangle config/fragle-conda-env.yaml
+:END:
+
 Python 3.8-3.10, PyTorch CPU, scikit-learn 1.2.2, pysam, samtools. Used only for the Fragle rule.
+
+#+begin_src yaml
+# Conda environment for FRAGLE (Python-based)
+channels:
+  - conda-forge
+
+dependencies:
+  - python>=3.8,<3.11
+  - pytorch-cpu
+  - scikit-learn=1.2.2
+  - pandas
+  - numpy
+  - pysam
+  - samtools
+#+end_src
 
 ** Configuration
 *** common.yaml
+:PROPERTIES:
+:header-args:yaml: :tangle config/common.yaml
+:END:
+
 Production configuration with full parameter matrix: 3 windows (90_150, 55_130, full), 3 PoN configs (nopon, cfdna-wgs prebuilt, custom from normals), 3 ichorCNA presets (default-low-input, aggressive, permissive).
 
+#+begin_src yaml
+# Common configuration for cfdna-cna
+# Shared defaults for cfDNA copy number analysis pipeline.
+
+genome-build: hg38
+genome-style: NCBI
+
+# Chromosome lists — two formats for different tools
+readcounter-chromosomes: "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X"
+ichor-chromosomes: "c(1:22, 'X')"
+ichor-chrs-normalize: "c(1:22)"
+
+ichor-repo: ${HOME}/repos/ichorCNA-patched
+
+threads: 8
+data-dir: /mnt/data/projects/cfdna-cna
+repo-dir: ${HOME}/repos/cfdna-cna
+
+conda:
+  ichor: ${HOME}/repos/cfdna-cna/config/ichor-conda-env.yaml
+  fragle: ${HOME}/repos/cfdna-cna/config/fragle-conda-env.yaml
+
+directories:
+  inputs: /mnt/data/projects/cfdna-cna/inputs
+  cfdna-cna: /mnt/data/projects/cfdna-cna
+  logs: /mnt/data/projects/cfdna-cna/logs
+  benchmark: /mnt/data/projects/cfdna-cna/benchmark
+
+sample-tsv-path: ${HOME}/repos/cfdna-cna/data/samples.tsv
+
+# Fragment length windows (full is always added automatically)
+windows:
+  - "90_150"
+  - "55_130"
+
+# Panel of Normals
+pon:
+  nopon:
+    prebuilt-path: null
+  cfdna-wgs:
+    prebuilt-path: /mnt/data/projects/nf1/cfdna-cna/pon/kh_cfdna_median.rds
+  custom:
+    normal-samples: true
+
+# ichorCNA presets (YAML anchors for inheritance)
+ichor-presets:
+  default-low-input: &ichor-default
+    normal: "c(0.95, 0.99, 0.995, 0.999)"
+    ploidy: "c(2)"
+    maxCN: 3
+    includeHOMD: FALSE
+    txnE: 0.9999
+    txnStrength: 10000
+    estimateNormal: TRUE
+    estimatePloidy: TRUE
+    estimateScPrevalence: FALSE
+    scStates: "c()"
+  aggressive:
+    <<: *ichor-default
+    txnE: 0.9999999
+    txnStrength: 10000000
+    maxCN: 4
+  permissive:
+    <<: *ichor-default
+    normal: "c(0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99)"
+    maxCN: 7
+
+# Fragle settings
+fragle:
+  repo-path: ${HOME}/repos/cfdna-cna/resources/FRAGLE
+  mode: R
+  threads: 8
+
+# ichorCNA reference files
+ichor-ref:
+  gc-wig: ${HOME}/repos/ichorCNA-patched/inst/extdata/gc_hg38_1000kb.wig
+  map-wig: ${HOME}/repos/ichorCNA-patched/inst/extdata/map_hg38_1000kb.wig
+  centromere: ${HOME}/repos/ichorCNA-patched/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt
+#+end_src
+
 *** test.yaml
-Test-scoped configuration: chr22 only, 2 windows (90_150, full), 2 PoN configs (nopon, custom), 1 preset (default-low-input).
+:PROPERTIES:
+:header-args:yaml: :tangle config/test.yaml
+:END:
+
+Test-scoped configuration: chr22 only, 2 windows (90_150, full), 2 PoN configs (nopon, custom), 1 preset (default-low-input). ichorCNA GC loess correction fails on chr22-only data (~28 valid bins at 1Mb is below the loess span threshold). Tests validate DAG structure, fragment filtering, and WIG generation.
+
+#+begin_src yaml
+# Test configuration for cfdna-cna
+# DAG/integration testing with chr22 data.
+# ichorCNA and Fragle outputs are biologically meaningless on chr22-only.
+
+threads: 2
+data-dir: ${HOME}/repos/cfdna-cna/tests/full
+repo-dir: ${HOME}/repos/cfdna-cna
+
+conda:
+  ichor: ${HOME}/repos/cfdna-cna/config/ichor-conda-env.yaml
+  fragle: ${HOME}/repos/cfdna-cna/config/fragle-conda-env.yaml
+
+directories:
+  inputs: ${HOME}/repos/cfdna-cna/tests/full/inputs
+  cfdna-cna: ${HOME}/repos/cfdna-cna/tests/full
+  logs: ${HOME}/repos/cfdna-cna/tests/logs
+  benchmark: ${HOME}/repos/cfdna-cna/tests/benchmark
+
+sample-tsv-path: ${HOME}/repos/cfdna-cna/data/test-samples.tsv
+
+# Test BAMs are chr22-only. Use chr22-subset reference WIGs so ichorCNA
+# has matching dimensions and enough bins for GC loess correction.
+readcounter-chromosomes: "chr22"
+ichor-chromosomes: "c('chr22')"
+ichor-chrs-normalize: "c('chr22')"
+
+genome-build: hg38
+genome-style: UCSC
+
+ichor-repo: ${HOME}/repos/ichorCNA-patched
+
+windows:
+  - "90_150"
+
+pon:
+  nopon:
+    prebuilt-path: null
+  custom:
+    normal-samples: true
+
+ichor-presets:
+  default-low-input:
+    normal: "c(0.95, 0.99, 0.995, 0.999)"
+    ploidy: "c(2)"
+    maxCN: 3
+    includeHOMD: FALSE
+    txnE: 0.9999
+    txnStrength: 10000
+    estimateNormal: TRUE
+    estimatePloidy: TRUE
+    estimateScPrevalence: FALSE
+    scStates: "c()"
+
+fragle:
+  repo-path: ${HOME}/repos/cfdna-cna/resources/FRAGLE
+  mode: R
+  threads: 2
+
+ichor-ref:
+  gc-wig: ${HOME}/repos/cfdna-cna/tests/full/inputs/gc_hg38_1000kb_chr22.wig
+  map-wig: ${HOME}/repos/cfdna-cna/tests/full/inputs/map_hg38_1000kb_chr22.wig
+  centromere: ${HOME}/repos/ichorCNA-patched/inst/extdata/GRCh38.GCA_000001405.2_centromere_acen.txt
+#+end_src
 
 * cfDNA CNA workflow
-** Background
-cfDNA copy number analysis uses read depth from shallow whole-genome sequencing to infer somatic copy number aberrations. ichorCNA is the standard tool for estimating tumor fraction and CNA from cfDNA. Fragle provides an orthogonal ctDNA fraction estimate from fragment length distributions.
+** Test wrapper
+:PROPERTIES:
+:header-args:snakemake: :tangle workflows/test.smk
+:END:
 
-Fragment length filtering enriches for tumor-derived cfDNA (shorter fragments), potentially improving sensitivity. This pipeline systematically evaluates the effect of different fragment windows on CNA calling.
+Test/project wrapper following the nuc-pos pattern. Loads config, resolves paths, derives sample/window/PoN/preset lists, includes the modular =cna.smk=, and defines =rule all= targeting all outputs.
 
-** Fragment length filtering
-Two rules handle fragment filtering:
-- =cna_fragment_filter=: Filters BAM by TLEN using samtools view expression filter
-- =cna_fragment_filter_full=: Symlinks original BAM for the =full= (unfiltered) window
+#+begin_src snakemake
+# =============================================================================
+# test.smk — Test wrapper for cfdna-cna pipeline
+# =============================================================================
+#
+# Includes cna.smk and defines rule all for integration testing.
+# Uses chr22-scoped test data.
+# =============================================================================
 
-The =full= window rule has priority via =ruleorder= to avoid ambiguity.
+import os
+import pandas as pd
 
-** BAM to WIG
-=cna_bam_to_wig= uses HMMcopy's =readCounter= to generate 1Mb-binned WIG files from filtered BAMs. Chromosome list is configurable (NCBI or UCSC style).
+# ---------------------------------------------------------------------------
+# Load YAML Configuration
+# ---------------------------------------------------------------------------
 
-** Panel of normals
-Two rules handle PoN generation:
-- =cna_pon_wig_list=: Aggregates normal sample WIG paths into a text file
-- =cna_build_pon=: Runs =createPanelOfNormals.R= from ichorCNA-patched
+configfile: "config/test.yaml"
 
-Custom PoNs are built per-window to avoid calibration mismatch with fragment-filtered tumor samples.
+def resolve_config_paths(config_dict):
+    """Recursively expand ${HOME} and other env vars in config values."""
+    for k, v in config_dict.items():
+        if isinstance(v, str):
+            config_dict[k] = os.path.expandvars(os.path.expanduser(v))
+        elif isinstance(v, dict):
+            resolve_config_paths(v)
+        elif isinstance(v, list):
+            config_dict[k] = [
+                os.path.expandvars(os.path.expanduser(i)) if isinstance(i, str) else i
+                for i in v
+            ]
 
-** ichorCNA
-=cna_run_ichor= runs ichorCNA with configurable presets and conditional PoN. The PoN input function returns an empty list for =nopon=, causing the =--normalPanel= flag to be omitted. Pre-built PoN paths are used directly; custom PoNs are resolved as DAG dependencies.
+resolve_config_paths(config)
 
-** Fragle
-=cna_run_fragle= runs Fragle ctDNA quantification on filtered BAMs. Output is per {library}.{window} only (no PoN/preset dimension since Fragle is independent of ichorCNA parameters).
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
 
-** TF extraction and aggregation
-- =cna_extract_ichor_tf=: Parses ichorCNA =.params.txt= to extract tumor fraction and ploidy
-- =cna_aggregate_results=: Merges all ichorCNA TF TSVs and Fragle CSVs into a single comparison table
+D_CNA       = config["directories"]["cfdna-cna"]
+D_INPUTS    = config["directories"]["inputs"]
+D_LOGS      = config["directories"]["logs"]
+D_BENCHMARK = config["directories"]["benchmark"]
+ENV_ICHOR   = config["conda"]["ichor"]
+ENV_FRAGLE  = config["conda"]["fragle"]
 
-** Visualization
-Four visualization rules produce PDF and PNG outputs:
-1. TF comparison plot (ichorCNA vs Fragle, faceted by window)
-2. LogR heatmap (genomic bins x samples, per pon/preset)
-3. Window concordance (TF across windows per sample)
-4. Fragle summary (ctDNA fraction per sample per window)
+# ---------------------------------------------------------------------------
+# Load Tabular Configuration
+# ---------------------------------------------------------------------------
+
+samples = pd.read_csv(config["sample-tsv-path"], sep="\t")
+samples["bam_path"] = samples["bam_path"].apply(os.path.expandvars)
+LIBRARY_IDS = samples["library_id"].tolist()
+TUMOR_IDS = samples[samples["sample_type"] == "tumor"]["library_id"].tolist()
+NORMAL_IDS = samples[samples["sample_type"] == "normal"]["library_id"].tolist()
+
+# ---------------------------------------------------------------------------
+# Window / PoN / Preset lists
+# ---------------------------------------------------------------------------
+
+WINDOWS = list(dict.fromkeys(config.get("windows", []) + ["full"]))
+PON_CONFIGS = config["pon"]
+PRESETS = config["ichor-presets"]
+
+# ---------------------------------------------------------------------------
+# Include module
+# ---------------------------------------------------------------------------
+
+include: "cna.smk"
+
+# ---------------------------------------------------------------------------
+# Rule all
+# ---------------------------------------------------------------------------
+
+rule all:
+    input:
+        # ichorCNA seg files
+        expand(
+            "{d}/{lib}.{win}.{pon}.{preset}/{lib}.cna.seg",
+            d=D_CNA, lib=TUMOR_IDS, win=WINDOWS,
+            pon=PON_CONFIGS.keys(), preset=PRESETS.keys()
+        ),
+        # Fragle CSVs
+        expand(
+            "{d}/fragle/{lib}.{win}/Fragle.csv",
+            d=D_CNA, lib=TUMOR_IDS, win=WINDOWS
+        ),
+        # Aggregate TF table
+        f"{D_CNA}/summary/tf_comparison.tsv",
+        # Visualization outputs
+        f"{D_CNA}/plots/tf_comparison.pdf",
+        expand(
+            "{d}/plots/logr_heatmap.{pon}.{preset}.pdf",
+            d=D_CNA, pon=PON_CONFIGS.keys(), preset=PRESETS.keys()
+        ),
+        f"{D_CNA}/plots/window_concordance.pdf",
+        f"{D_CNA}/plots/fragle_summary.pdf",
+#+end_src
+
+** CNA module
+:PROPERTIES:
+:header-args:snakemake: :tangle workflows/cna.smk
+:END:
+
+Modular snakefile included by wrappers. Expects =D_CNA=, =D_INPUTS=, =D_LOGS=, =D_BENCHMARK=, =ENV_ICHOR=, =ENV_FRAGLE=, =LIBRARY_IDS=, =TUMOR_IDS=, =NORMAL_IDS=, =WINDOWS=, =PON_CONFIGS=, =PRESETS=, and =samples= DataFrame to be defined before inclusion.
+
+*** Preamble and helpers
+
+#+begin_src snakemake
+# =============================================================================
+# cna.smk — cfDNA Copy Number Analysis Pipeline Module
+# =============================================================================
+#
+# Modular snakefile for cfDNA CNA analysis with ichorCNA and Fragle.
+#
+# Intended to be included via "include:" from a wrapper (e.g., test.smk).
+# Expects the following to be defined before inclusion:
+#   - resolve_config_paths() applied to config
+#   - D_CNA, D_INPUTS, D_LOGS, D_BENCHMARK, ENV_ICHOR, ENV_FRAGLE
+#   - LIBRARY_IDS, TUMOR_IDS, NORMAL_IDS, WINDOWS, PON_CONFIGS, PRESETS
+#   - samples DataFrame
+# =============================================================================
+
+shell.prefix("set -e; export PYTHONNOUSERSITE=1; ")
+
+# ---------------------------------------------------------------------------
+# Helper: look up BAM path from sample table
+# ---------------------------------------------------------------------------
+def get_bam(wildcards):
+    return samples.loc[samples.library_id == wildcards.library, "bam_path"].values[0]
+#+end_src
+
+*** Fragment length filtering
+
+Two rules handle fragment filtering. =cna_fragment_filter= filters by TLEN using awk (the samtools =-e= expression filter is unreliable across builds). =cna_fragment_filter_full= symlinks the original BAM for the =full= (unfiltered) window. The =full= window rule has priority via =ruleorder=.
+
+#+begin_src snakemake
+# ---------------------------------------------------------------------------
+# Rule 1a: Fragment filter (sized windows)
+# ---------------------------------------------------------------------------
+rule cna_fragment_filter:
+    """Filter BAM by fragment length (TLEN) for a specific window."""
+    input:
+        bam=get_bam,
+    output:
+        bam=f"{D_CNA}/filt_bam/{{library}}.{{window}}.bam",
+        bai=f"{D_CNA}/filt_bam/{{library}}.{{window}}.bam.bai",
+    params:
+        frag_min=lambda w: w.window.split("_")[0],
+        frag_max=lambda w: w.window.split("_")[1],
+    log:
+        f"{D_LOGS}/{{library}}.{{window}}_fragment_filter.log"
+    benchmark:
+        f"{D_BENCHMARK}/{{library}}.{{window}}_fragment_filter.tsv"
+    threads: 4
+    conda: ENV_ICHOR
+    wildcard_constraints:
+        window=r"\d+_\d+"
+    message: "Fragment filtering {wildcards.library} to {wildcards.window}"
+    shell:
+        """
+        samtools view -h -@ {threads} {input.bam} | \
+          awk -v min={params.frag_min} -v max={params.frag_max} \
+          'BEGIN{{OFS="\t"}} /^@/{{print;next}} {{t=$9; if(t<0)t=-t; if(t>=min && t<=max)print}}' | \
+          samtools sort -@ {threads} -o {output.bam} 2> {log}
+        samtools index {output.bam} 2>> {log}
+        """
+
+# ---------------------------------------------------------------------------
+# Rule 1b: Fragment filter (full window — symlink)
+# ---------------------------------------------------------------------------
+rule cna_fragment_filter_full:
+    """Symlink BAM for full (unfiltered) window."""
+    input:
+        bam=get_bam,
+        bai=lambda w: get_bam(w) + ".bai",
+    output:
+        bam=f"{D_CNA}/filt_bam/{{library}}.full.bam",
+        bai=f"{D_CNA}/filt_bam/{{library}}.full.bam.bai",
+    log:
+        f"{D_LOGS}/{{library}}.full_fragment_filter.log"
+    benchmark:
+        f"{D_BENCHMARK}/{{library}}.full_fragment_filter.tsv"
+    message: "Symlinking full BAM for {wildcards.library}"
+    shell:
+        """
+        ln -sf $(readlink -f {input.bam}) {output.bam} 2> {log}
+        ln -sf $(readlink -f {input.bai}) {output.bai} 2>> {log}
+        """
+
+ruleorder: cna_fragment_filter_full > cna_fragment_filter
+#+end_src
+
+*** BAM to WIG
+
+=cna_bam_to_wig= uses HMMcopy's =readCounter= to generate 1Mb-binned WIG files from filtered BAMs. Chromosome list is configurable via =readcounter-chromosomes= (NCBI or UCSC style).
+
+#+begin_src snakemake
+# ---------------------------------------------------------------------------
+# Rule 2: BAM to WIG (readCounter)
+# ---------------------------------------------------------------------------
+rule cna_bam_to_wig:
+    """Convert filtered BAM to WIG using readCounter (HMMcopy)."""
+    input:
+        bam=f"{D_CNA}/filt_bam/{{library}}.{{window}}.bam",
+        bai=f"{D_CNA}/filt_bam/{{library}}.{{window}}.bam.bai",
+    output:
+        wig=f"{D_CNA}/wig/{{library}}.{{window}}.wig",
+    params:
+        chromosomes=config["readcounter-chromosomes"],
+    log:
+        f"{D_LOGS}/{{library}}.{{window}}_bam_to_wig.log"
+    benchmark:
+        f"{D_BENCHMARK}/{{library}}.{{window}}_bam_to_wig.tsv"
+    threads: 1
+    conda: ENV_ICHOR
+    message: "readCounter: {wildcards.library}.{wildcards.window}"
+    shell:
+        """
+        readCounter \
+          --window 1000000 \
+          --quality 20 \
+          --chromosome "{params.chromosomes}" \
+          {input.bam} > {output.wig} 2> {log}
+        """
+#+end_src
+
+*** Panel of normals
+
+Custom PoNs are built per-window to avoid calibration mismatch with fragment-filtered tumor samples. =cna_pon_wig_list= aggregates normal sample WIG paths. =cna_build_pon= runs =createPanelOfNormals.R= from ichorCNA-patched. The wildcard constraint restricts these rules to PoN configs with =normal-samples: true=.
+
+#+begin_src snakemake
+# ---------------------------------------------------------------------------
+# Rule 3: PoN WIG list
+# ---------------------------------------------------------------------------
+rule cna_pon_wig_list:
+    """Create text file listing normal-sample WIG paths for PoN construction."""
+    input:
+        wigs=expand(f"{D_CNA}/wig/{{normal}}.{{{{window}}}}.wig", normal=NORMAL_IDS),
+    output:
+        f"{D_CNA}/pon/{{pon}}.{{window}}_wiglist.txt",
+    log:
+        f"{D_LOGS}/{{pon}}.{{window}}_pon_wig_list.log"
+    benchmark:
+        f"{D_BENCHMARK}/{{pon}}.{{window}}_pon_wig_list.tsv"
+    wildcard_constraints:
+        pon="|".join([k for k, v in PON_CONFIGS.items() if v.get("normal-samples")])
+    message: "Building WIG list for PoN {wildcards.pon}.{wildcards.window}"
+    run:
+        with open(output[0], "w") as f:
+            for wig in input.wigs:
+                f.write(wig + "\n")
+
+# ---------------------------------------------------------------------------
+# Rule 4: Build PoN
+# ---------------------------------------------------------------------------
+rule cna_build_pon:
+    """Build panel of normals from normal sample WIGs."""
+    input:
+        wiglist=f"{D_CNA}/pon/{{pon}}.{{window}}_wiglist.txt",
+    output:
+        rds=f"{D_CNA}/pon/{{pon}}.{{window}}_median.rds",
+    params:
+        ichor_repo=config["ichor-repo"],
+        gc_wig=config["ichor-ref"]["gc-wig"],
+        map_wig=config["ichor-ref"]["map-wig"],
+        centromere=config["ichor-ref"]["centromere"],
+        chrs=config["ichor-chromosomes"],
+        chrs_norm=config["ichor-chrs-normalize"],
+    log:
+        f"{D_LOGS}/{{pon}}.{{window}}_build_pon.log"
+    benchmark:
+        f"{D_BENCHMARK}/{{pon}}.{{window}}_build_pon.tsv"
+    threads: 1
+    conda: ENV_ICHOR
+    message: "Building PoN {wildcards.pon} for window {wildcards.window}"
+    shell:
+        """
+        Rscript {params.ichor_repo}/scripts/createPanelOfNormals.R \
+          --filelist {input.wiglist} \
+          --gcWig {params.gc_wig} \
+          --mapWig {params.map_wig} \
+          --centromere {params.centromere} \
+          --chrs "{params.chrs}" \
+          --chrNormalize "{params.chrs_norm}" \
+          --outfile {output.rds} \
+          --libdir {params.ichor_repo} \
+          2> {log}
+        """
+#+end_src
+
+*** ichorCNA
+
+=cna_run_ichor= runs ichorCNA with configurable presets and conditional PoN. The =get_pon_input= function returns an empty list for =nopon=, causing the =--normalPanel= flag to be omitted. Pre-built PoN paths are used directly; custom PoNs are resolved as DAG dependencies.
+
+#+begin_src snakemake
+# ---------------------------------------------------------------------------
+# PoN input resolution
+# ---------------------------------------------------------------------------
+def get_pon_input(wildcards):
+    """Return PoN RDS path as a list (empty for nopon)."""
+    pon_cfg = PON_CONFIGS[wildcards.pon]
+    if pon_cfg.get("prebuilt-path"):
+        return [pon_cfg["prebuilt-path"]]
+    elif pon_cfg.get("normal-samples"):
+        return [f"{D_CNA}/pon/{wildcards.pon}.{wildcards.window}_median.rds"]
+    else:  # nopon
+        return []
+
+# ---------------------------------------------------------------------------
+# Rule 5: Run ichorCNA
+# ---------------------------------------------------------------------------
+rule cna_run_ichor:
+    """Run ichorCNA with preset parameters and optional PoN."""
+    input:
+        wig=f"{D_CNA}/wig/{{library}}.{{window}}.wig",
+        pon=get_pon_input,
+    output:
+        seg=f"{D_CNA}/{{library}}.{{window}}.{{pon}}.{{preset}}/{{library}}.cna.seg",
+        params_txt=f"{D_CNA}/{{library}}.{{window}}.{{pon}}.{{preset}}/{{library}}.params.txt",
+        corrected=f"{D_CNA}/{{library}}.{{window}}.{{pon}}.{{preset}}/{{library}}.correctedDepth.txt",
+    params:
+        ichor_repo=config["ichor-repo"],
+        gc_wig=config["ichor-ref"]["gc-wig"],
+        map_wig=config["ichor-ref"]["map-wig"],
+        centromere=config["ichor-ref"]["centromere"],
+        genome_build=config["genome-build"],
+        genome_style=config["genome-style"],
+        chrs=config["ichor-chromosomes"],
+        chrs_norm=config["ichor-chrs-normalize"],
+        outdir=lambda w: f"{D_CNA}/{w.library}.{w.window}.{w.pon}.{w.preset}",
+        pon_flag=lambda w, input: f"--normalPanel {input.pon[0]}" if input.pon else "",
+        normal=lambda w: PRESETS[w.preset]["normal"],
+        ploidy=lambda w: PRESETS[w.preset]["ploidy"],
+        maxCN=lambda w: PRESETS[w.preset]["maxCN"],
+        includeHOMD=lambda w: PRESETS[w.preset]["includeHOMD"],
+        txnE=lambda w: PRESETS[w.preset]["txnE"],
+        txnStrength=lambda w: PRESETS[w.preset]["txnStrength"],
+        estimateNormal=lambda w: PRESETS[w.preset]["estimateNormal"],
+        estimatePloidy=lambda w: PRESETS[w.preset]["estimatePloidy"],
+        estimateScPrevalence=lambda w: PRESETS[w.preset]["estimateScPrevalence"],
+        scStates=lambda w: PRESETS[w.preset]["scStates"],
+    log:
+        f"{D_LOGS}/{{library}}.{{window}}.{{pon}}.{{preset}}_ichor.log"
+    benchmark:
+        f"{D_BENCHMARK}/{{library}}.{{window}}.{{pon}}.{{preset}}_ichor.tsv"
+    threads: 1
+    conda: ENV_ICHOR
+    message: "ichorCNA: {wildcards.library}.{wildcards.window}.{wildcards.pon}.{wildcards.preset}"
+    shell:
+        """
+        Rscript {params.ichor_repo}/scripts/runIchorCNA.R \
+          --libdir {params.ichor_repo} \
+          --id {wildcards.library} \
+          --WIG {input.wig} \
+          --gcWig {params.gc_wig} \
+          --mapWig {params.map_wig} \
+          --centromere {params.centromere} \
+          --genomeBuild {params.genome_build} \
+          --genomeStyle {params.genome_style} \
+          --chrs "{params.chrs}" \
+          --chrNormalize "{params.chrs_norm}" \
+          --normal "{params.normal}" \
+          --ploidy "{params.ploidy}" \
+          --maxCN {params.maxCN} \
+          --includeHOMD {params.includeHOMD} \
+          --txnE {params.txnE} \
+          --txnStrength {params.txnStrength} \
+          --estimateNormal {params.estimateNormal} \
+          --estimatePloidy {params.estimatePloidy} \
+          --estimateScPrevalence {params.estimateScPrevalence} \
+          --scStates "{params.scStates}" \
+          {params.pon_flag} \
+          --outDir {params.outdir}/ \
+          2> {log}
+        """
+#+end_src
+
+*** Fragle
+
+=cna_run_fragle= runs Fragle ctDNA quantification on filtered BAMs. Output is per {library}.{window} only (no PoN/preset dimension since Fragle is independent of ichorCNA parameters). Fragle is cloned into =resources/FRAGLE/= (like Griffin in nuc-pos).
+
+#+begin_src snakemake
+# ---------------------------------------------------------------------------
+# Rule 6: Run Fragle
+# ---------------------------------------------------------------------------
+rule cna_run_fragle:
+    """Run Fragle ctDNA quantification on filtered BAM."""
+    input:
+        bam=f"{D_CNA}/filt_bam/{{library}}.{{window}}.bam",
+        bai=f"{D_CNA}/filt_bam/{{library}}.{{window}}.bam.bai",
+    output:
+        csv=f"{D_CNA}/fragle/{{library}}.{{window}}/Fragle.csv",
+    params:
+        fragle_repo=config["fragle"]["repo-path"],
+        mode=config["fragle"]["mode"],
+        genome_build=config["genome-build"],
+        outdir=lambda w: f"{D_CNA}/fragle/{w.library}.{w.window}",
+    log:
+        f"{D_LOGS}/{{library}}.{{window}}_fragle.log"
+    benchmark:
+        f"{D_BENCHMARK}/{{library}}.{{window}}_fragle.tsv"
+    threads: config["fragle"]["threads"]
+    conda: ENV_FRAGLE
+    message: "Fragle: {wildcards.library}.{wildcards.window}"
+    shell:
+        """
+        python {params.fragle_repo}/main.py \
+          --input {input.bam} \
+          --output {params.outdir} \
+          --mode {params.mode} \
+          --genome_build {params.genome_build} \
+          --cpu {threads} \
+          --threads {threads} \
+          2> {log}
+        """
+#+end_src
+
+*** TF extraction and aggregation
+
+=cna_extract_ichor_tf= parses ichorCNA =.params.txt= to extract tumor fraction and ploidy. =cna_aggregate_results= merges all ichorCNA TF TSVs and Fragle CSVs into a single comparison table.
+
+#+begin_src snakemake
+# ---------------------------------------------------------------------------
+# Rule 7: Extract ichorCNA tumor fraction
+# ---------------------------------------------------------------------------
+rule cna_extract_ichor_tf:
+    """Parse ichorCNA params.txt to extract tumor fraction."""
+    input:
+        params_txt=f"{D_CNA}/{{library}}.{{window}}.{{pon}}.{{preset}}/{{library}}.params.txt",
+    output:
+        tsv=f"{D_CNA}/{{library}}.{{window}}.{{pon}}.{{preset}}/{{library}}.tf.tsv",
+    log:
+        f"{D_LOGS}/{{library}}.{{window}}.{{pon}}.{{preset}}_extract_tf.log"
+    benchmark:
+        f"{D_BENCHMARK}/{{library}}.{{window}}.{{pon}}.{{preset}}_extract_tf.tsv"
+    conda: ENV_ICHOR
+    message: "Extract TF: {wildcards.library}.{wildcards.window}.{wildcards.pon}.{wildcards.preset}"
+    script:
+        "../scripts/extract_ichor_tf.py"
+
+# ---------------------------------------------------------------------------
+# Rule 8: Aggregate all TF results
+# ---------------------------------------------------------------------------
+rule cna_aggregate_results:
+    """Merge ichorCNA and Fragle TF estimates into comparison table."""
+    input:
+        ichor_tfs=expand(
+            f"{D_CNA}/{{lib}}.{{win}}.{{pon}}.{{preset}}/{{lib}}.tf.tsv",
+            lib=TUMOR_IDS, win=WINDOWS,
+            pon=PON_CONFIGS.keys(), preset=PRESETS.keys()
+        ),
+        fragle_csvs=expand(
+            f"{D_CNA}/fragle/{{lib}}.{{win}}/Fragle.csv",
+            lib=TUMOR_IDS, win=WINDOWS
+        ),
+    output:
+        tsv=f"{D_CNA}/summary/tf_comparison.tsv",
+    log:
+        f"{D_LOGS}/aggregate_results.log"
+    benchmark:
+        f"{D_BENCHMARK}/aggregate_results.tsv"
+    conda: ENV_ICHOR
+    message: "Aggregating TF comparison table"
+    script:
+        "../scripts/aggregate_tf.R"
+#+end_src
+
+*** Visualization
+
+Four visualization rules produce PDF and PNG outputs. R scripts in =scripts/=, invoked via =script:= directive with =ENV_ICHOR= conda.
+
+#+begin_src snakemake
+# ---------------------------------------------------------------------------
+# Rule 9a: TF comparison plot
+# ---------------------------------------------------------------------------
+rule cna_plot_tf_comparison:
+    input:
+        tsv=f"{D_CNA}/summary/tf_comparison.tsv",
+    output:
+        pdf=f"{D_CNA}/plots/tf_comparison.pdf",
+        png=f"{D_CNA}/plots/tf_comparison.png",
+    log:
+        f"{D_LOGS}/plot_tf_comparison.log"
+    benchmark:
+        f"{D_BENCHMARK}/plot_tf_comparison.tsv"
+    conda: ENV_ICHOR
+    message: "Plotting TF comparison"
+    script:
+        "../scripts/plot_tf_comparison.R"
+
+# ---------------------------------------------------------------------------
+# Rule 9b: LogR heatmap (one per pon/preset combo)
+# ---------------------------------------------------------------------------
+rule cna_plot_logr_heatmap:
+    input:
+        depth_files=expand(
+            f"{D_CNA}/{{lib}}.{{win}}.{{{{pon}}}}.{{{{preset}}}}/{{lib}}.correctedDepth.txt",
+            lib=TUMOR_IDS, win=WINDOWS,
+        ),
+    output:
+        pdf=f"{D_CNA}/plots/logr_heatmap.{{pon}}.{{preset}}.pdf",
+        png=f"{D_CNA}/plots/logr_heatmap.{{pon}}.{{preset}}.png",
+    log:
+        f"{D_LOGS}/plot_logr_heatmap.{{pon}}.{{preset}}.log"
+    benchmark:
+        f"{D_BENCHMARK}/plot_logr_heatmap.{{pon}}.{{preset}}.tsv"
+    conda: ENV_ICHOR
+    message: "Plotting logR heatmap for {wildcards.pon}.{wildcards.preset}"
+    script:
+        "../scripts/plot_logr_heatmap.R"
+
+# ---------------------------------------------------------------------------
+# Rule 9c: Window concordance
+# ---------------------------------------------------------------------------
+rule cna_plot_window_concordance:
+    input:
+        tsv=f"{D_CNA}/summary/tf_comparison.tsv",
+    output:
+        pdf=f"{D_CNA}/plots/window_concordance.pdf",
+        png=f"{D_CNA}/plots/window_concordance.png",
+    log:
+        f"{D_LOGS}/plot_window_concordance.log"
+    benchmark:
+        f"{D_BENCHMARK}/plot_window_concordance.tsv"
+    conda: ENV_ICHOR
+    message: "Plotting window concordance"
+    script:
+        "../scripts/plot_window_concordance.R"
+
+# ---------------------------------------------------------------------------
+# Rule 9d: Fragle summary
+# ---------------------------------------------------------------------------
+rule cna_plot_fragle_summary:
+    input:
+        fragle_csvs=expand(
+            f"{D_CNA}/fragle/{{lib}}.{{win}}/Fragle.csv",
+            lib=TUMOR_IDS, win=WINDOWS
+        ),
+    output:
+        pdf=f"{D_CNA}/plots/fragle_summary.pdf",
+        png=f"{D_CNA}/plots/fragle_summary.png",
+    log:
+        f"{D_LOGS}/plot_fragle_summary.log"
+    benchmark:
+        f"{D_BENCHMARK}/plot_fragle_summary.tsv"
+    conda: ENV_ICHOR
+    message: "Plotting Fragle summary"
+    script:
+        "../scripts/plot_fragle_summary.R"
+#+end_src
+
+** Scripts
+*** extract_ichor_tf.py
+:PROPERTIES:
+:header-args:python: :tangle scripts/extract_ichor_tf.py
+:END:
+
+#+begin_src python
+"""Parse ichorCNA .params.txt and extract tumor fraction + ploidy."""
+import sys
+
+params_file = snakemake.input.params_txt
+output_file = snakemake.output.tsv
+library = snakemake.wildcards.library
+window = snakemake.wildcards.window
+pon = snakemake.wildcards.pon
+preset = snakemake.wildcards.preset
+
+tumor_fraction = "NA"
+ploidy = "NA"
+
+with open(params_file) as f:
+    for line in f:
+        if line.startswith("Tumor Fraction:"):
+            tumor_fraction = line.strip().split("\t")[1]
+        elif line.startswith("Ploidy:"):
+            ploidy = line.strip().split("\t")[1]
+
+with open(output_file, "w") as f:
+    f.write("library_id\twindow\tpon\tpreset\tmethod\ttumor_fraction\tploidy\n")
+    f.write(f"{library}\t{window}\t{pon}\t{preset}\tichorCNA\t{tumor_fraction}\t{ploidy}\n")
+#+end_src
+
+*** aggregate_tf.R
+:PROPERTIES:
+:header-args:R: :tangle scripts/aggregate_tf.R
+:END:
+
+#+begin_src R
+library(tidyverse)
+
+# Collect all ichorCNA TF files
+ichor_files <- snakemake@input[["ichor_tfs"]]
+fragle_files <- snakemake@input[["fragle_csvs"]]
+
+# Read and bind ichorCNA TFs
+ichor_df <- map_dfr(ichor_files, read_tsv, show_col_types = FALSE)
+
+# Read and bind Fragle TFs
+fragle_df <- map_dfr(fragle_files, function(f) {
+  df <- read_csv(f, show_col_types = FALSE)
+  # Extract library and window from path
+  parts <- str_match(f, "/fragle/([^/]+)\\.([^/]+)/Fragle\\.csv")
+  tibble(
+    library_id = parts[,2],
+    window = parts[,3],
+    pon = NA_character_,
+    preset = NA_character_,
+    method = "Fragle",
+    tumor_fraction = df$Fragle[1],
+    ploidy = NA_real_
+  )
+})
+
+# Combine and write
+bind_rows(ichor_df, fragle_df) %>%
+  write_tsv(snakemake@output[["tsv"]])
+#+end_src
+
+*** plot_tf_comparison.R
+:PROPERTIES:
+:header-args:R: :tangle scripts/plot_tf_comparison.R
+:END:
+
+#+begin_src R
+library(tidyverse)
+
+df <- read_tsv(snakemake@input[["tsv"]], show_col_types = FALSE)
+
+p <- ggplot(df, aes(x = library_id, y = as.numeric(tumor_fraction),
+                     color = method, shape = preset)) +
+  geom_point(size = 3, position = position_dodge(width = 0.3)) +
+  facet_wrap(~window, scales = "free_x") +
+  labs(x = "Library", y = "Tumor Fraction", title = "TF Comparison: ichorCNA vs Fragle") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave(snakemake@output[["pdf"]], p, width = 12, height = 6)
+ggsave(snakemake@output[["png"]], p, width = 12, height = 6, dpi = 150)
+#+end_src
+
+*** plot_logr_heatmap.R
+:PROPERTIES:
+:header-args:R: :tangle scripts/plot_logr_heatmap.R
+:END:
+
+#+begin_src R
+library(tidyverse)
+library(pheatmap)
+
+depth_files <- snakemake@input[["depth_files"]]
+
+mat_list <- lapply(depth_files, function(f) {
+  df <- read_tsv(f, show_col_types = FALSE)
+  parts <- str_match(basename(dirname(f)), "^([^.]+)\\.([^.]+)\\.([^.]+)\\.([^.]+)$")
+  lib <- parts[,2]
+  setNames(df$copy.norm, paste0(df$chr, ":", df$start)) -> vals
+  tibble(bin = names(vals), logR = vals, library_id = lib)
+})
+
+combined <- bind_rows(mat_list)
+mat <- combined %>%
+  pivot_wider(names_from = bin, values_from = logR) %>%
+  column_to_rownames("library_id") %>%
+  as.matrix()
+
+pdf(snakemake@output[["pdf"]], width = 20, height = max(4, nrow(mat)))
+pheatmap(mat, cluster_cols = FALSE, show_colnames = FALSE,
+         main = "LogR Heatmap", color = colorRampPalette(c("blue", "white", "red"))(100),
+         breaks = seq(-2, 2, length.out = 101))
+dev.off()
+
+png(snakemake@output[["png"]], width = 2000, height = max(400, nrow(mat) * 80), res = 150)
+pheatmap(mat, cluster_cols = FALSE, show_colnames = FALSE,
+         main = "LogR Heatmap", color = colorRampPalette(c("blue", "white", "red"))(100),
+         breaks = seq(-2, 2, length.out = 101))
+dev.off()
+#+end_src
+
+*** plot_window_concordance.R
+:PROPERTIES:
+:header-args:R: :tangle scripts/plot_window_concordance.R
+:END:
+
+#+begin_src R
+library(tidyverse)
+
+df <- read_tsv(snakemake@input[["tsv"]], show_col_types = FALSE) %>%
+  mutate(tumor_fraction = as.numeric(tumor_fraction))
+
+p <- ggplot(df, aes(x = window, y = tumor_fraction,
+                     group = library_id, color = library_id)) +
+  geom_line() +
+  geom_point(size = 2) +
+  facet_wrap(~method, scales = "free_y") +
+  labs(x = "Window", y = "Tumor Fraction",
+       title = "Window Concordance: TF across fragment length windows") +
+  theme_bw()
+
+ggsave(snakemake@output[["pdf"]], p, width = 10, height = 6)
+ggsave(snakemake@output[["png"]], p, width = 10, height = 6, dpi = 150)
+#+end_src
+
+*** plot_fragle_summary.R
+:PROPERTIES:
+:header-args:R: :tangle scripts/plot_fragle_summary.R
+:END:
+
+#+begin_src R
+library(tidyverse)
+
+fragle_files <- snakemake@input[["fragle_csvs"]]
+
+df <- map_dfr(fragle_files, function(f) {
+  d <- read_csv(f, show_col_types = FALSE)
+  parts <- str_match(f, "/fragle/([^/]+)\\.([^/]+)/Fragle\\.csv")
+  d %>% mutate(library_id = parts[,2], window = parts[,3])
+})
+
+p <- ggplot(df, aes(x = library_id, y = Fragle, fill = window)) +
+  geom_col(position = "dodge") +
+  labs(x = "Library", y = "Fragle ctDNA Fraction",
+       title = "Fragle Predictions by Window") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave(snakemake@output[["pdf"]], p, width = 10, height = 6)
+ggsave(snakemake@output[["png"]], p, width = 10, height = 6, dpi = 150)
+#+end_src
 
 * Testing
 ** Test data provenance
-Chr22-only BAMs from the frag repo test data. These provide DAG/integration testing only --- ichorCNA and Fragle produce biologically meaningless results on single-chromosome data.
-
+Chr22-only BAMs from the nuc-pos repo test data (originally from frag repo). These provide DAG/integration testing only --- ichorCNA GC loess correction fails on chr22-only data (~28 valid bins at 1Mb is below the loess span threshold), and Fragle requires all chromosomes present in the BAM.
 ** Test matrix
 With test.yaml: 1 tumor (lib002) x 2 windows (90_150, full) x 2 PoN (nopon, custom) x 1 preset (default-low-input) = 4 ichorCNA jobs, 2 Fragle jobs, plus PoN builds, aggregation, and visualizations (29 total jobs).
-
 * Phase 2
 ** WisecondorX (future)
-Z-score-based CNA caller. Would add =cna_run_wisecondorx= rule producing =.bed= CNA segments. New conda env (Python). Parallel output path under ={D_CNA}/wisecondorx/=.
-
+Z-score-based CNA caller ([[https://github.com/CenterForMedicalGeneticsGhent/WisecondorX][GitHub]]). Would add =cna_run_wisecondorx= rule producing =.bed= CNA segments. New conda env (Python). Parallel output path under ={D_CNA}/wisecondorx/=. Uses within-sample reference bins with matching GC/mappability for normalization.
 ** BayesCNA (future)
-Bayesian changepoint detection for low-purity samples. Would add =cna_run_bayescna= rule. R-based, could share ichor env.
-
+Bayesian changepoint detection for low-purity samples ([[https://github.com/lottaer/BayesCNA][GitHub]]). Would add =cna_run_bayescna= rule. R-based, could share ichor env. Designed to increase recall at the 1-3% TF detection boundary where ichorCNA is unreliable.
 * Calibration notes
 ** PoN/window mismatch warning
 A panel of normals built on unfiltered reads should not be used with fragment-filtered tumor BAMs, and vice versa. The pipeline enforces this by building custom PoNs per-window. Pre-built PoNs are the user's responsibility to match.
-
 ** ichorCNA default PoN
 The shipped =HD_ULP_PoN_1Mb_median= was built on unfiltered reads. Using it with fragment-filtered BAMs introduces systematic bias. Recommend =nopon= or custom PoN for filtered windows.
-
 * Ideas
