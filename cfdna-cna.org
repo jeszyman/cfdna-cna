@@ -104,6 +104,8 @@ readcounter-chromosomes: "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,
 ichor-chromosomes: "c(1:22, 'X')"
 ichor-chrs-normalize: "c(1:22)"
 
+readcounter-bin-size: 1000000
+
 ichor-repo: ${HOME}/repos/ichorCNA-patched
 
 threads: 8
@@ -202,6 +204,7 @@ sample-tsv-path: ${HOME}/repos/cfdna-cna/data/test-samples.tsv
 
 # Test BAMs are chr22-only. Use chr22-subset reference WIGs so ichorCNA
 # has matching dimensions and enough bins for GC loess correction.
+readcounter-bin-size: 1000000
 readcounter-chromosomes: "chr22"
 ichor-chromosomes: "c('chr22')"
 ichor-chrs-normalize: "c('chr22')"
@@ -334,7 +337,7 @@ rule all:
         ),
         # Fragle CSVs
         expand(
-            "{d}/fragle/{lib}.{win}/Fragle.csv",
+            "{d}/fragle/{lib}.{win}/{lib}.{win}/Fragle.csv",
             d=D_CNA, lib=TUMOR_IDS, win=WINDOWS
         ),
         # Aggregate TF table
@@ -460,6 +463,7 @@ rule cna_bam_to_wig:
         wig=f"{D_CNA}/wig/{{library}}.{{window}}.wig",
     params:
         chromosomes=config["readcounter-chromosomes"],
+        bin_size=config["readcounter-bin-size"],
     log:
         f"{D_LOGS}/{{library}}.{{window}}_bam_to_wig.log"
     benchmark:
@@ -470,7 +474,7 @@ rule cna_bam_to_wig:
     shell:
         """
         readCounter \
-          --window 1000000 \
+          --window {params.bin_size} \
           --quality 20 \
           --chromosome "{params.chromosomes}" \
           {input.bam} > {output.wig} 2> {log}
@@ -637,12 +641,16 @@ rule cna_run_ichor:
 # Rule 6: Run Fragle
 # ---------------------------------------------------------------------------
 rule cna_run_fragle:
-    """Run Fragle ctDNA quantification on filtered BAM."""
+    """Run Fragle ctDNA quantification on filtered BAM.
+
+    Fragle creates output at {outdir}/{bam_stem}/, so the actual CSV lands
+    at {outdir}/{library}.{window}/Fragle.csv (nested under the outdir).
+    """
     input:
         bam=f"{D_CNA}/filt_bam/{{library}}.{{window}}.bam",
         bai=f"{D_CNA}/filt_bam/{{library}}.{{window}}.bam.bai",
     output:
-        csv=f"{D_CNA}/fragle/{{library}}.{{window}}/Fragle.csv",
+        csv=f"{D_CNA}/fragle/{{library}}.{{window}}/{{library}}.{{window}}/Fragle.csv",
     params:
         fragle_repo=config["fragle"]["repo-path"],
         mode=config["fragle"]["mode"],
@@ -703,7 +711,7 @@ rule cna_aggregate_results:
             pon=PON_CONFIGS.keys(), preset=PRESETS.keys()
         ),
         fragle_csvs=expand(
-            f"{D_CNA}/fragle/{{lib}}.{{win}}/Fragle.csv",
+            f"{D_CNA}/fragle/{{lib}}.{{win}}/{{lib}}.{{win}}/Fragle.csv",
             lib=TUMOR_IDS, win=WINDOWS
         ),
     output:
@@ -786,7 +794,7 @@ rule cna_plot_window_concordance:
 rule cna_plot_fragle_summary:
     input:
         fragle_csvs=expand(
-            f"{D_CNA}/fragle/{{lib}}.{{win}}/Fragle.csv",
+            f"{D_CNA}/fragle/{{lib}}.{{win}}/{{lib}}.{{win}}/Fragle.csv",
             lib=TUMOR_IDS, win=WINDOWS
         ),
     output:
@@ -853,7 +861,7 @@ ichor_df <- map_dfr(ichor_files, read_tsv, show_col_types = FALSE)
 fragle_df <- map_dfr(fragle_files, function(f) {
   df <- read_csv(f, show_col_types = FALSE)
   # Extract library and window from path
-  parts <- str_match(f, "/fragle/([^/]+)\\.([^/]+)/Fragle\\.csv")
+  parts <- str_match(f, "/fragle/([^/]+)\\.([^/]+)/[^/]+/Fragle\\.csv")
   tibble(
     library_id = parts[,2],
     window = parts[,3],
@@ -966,7 +974,7 @@ fragle_files <- snakemake@input[["fragle_csvs"]]
 
 df <- map_dfr(fragle_files, function(f) {
   d <- read_csv(f, show_col_types = FALSE)
-  parts <- str_match(f, "/fragle/([^/]+)\\.([^/]+)/Fragle\\.csv")
+  parts <- str_match(f, "/fragle/([^/]+)\\.([^/]+)/[^/]+/Fragle\\.csv")
   d %>% mutate(library_id = parts[,2], window = parts[,3])
 })
 
