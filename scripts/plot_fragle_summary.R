@@ -4,7 +4,7 @@ fragle_files <- snakemake@input[["fragle_csvs"]]
 
 df <- map_dfr(fragle_files, function(f) {
   d <- read_csv(f, show_col_types = FALSE)
-  parts <- str_match(f, "/fragle/([^/]+)\\.([^/]+)/Fragle\\.csv")
+  parts <- str_match(f, "/fragle/([^/]+)\\.([^/]+)/[^/]+/Fragle\\.csv")
   d %>% mutate(library_id = parts[,2], window = parts[,3])
 })
 

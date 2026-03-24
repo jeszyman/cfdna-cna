@@ -9,6 +9,8 @@ readcounter-chromosomes: "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,
 ichor-chromosomes: "c(1:22, 'X')"
 ichor-chrs-normalize: "c(1:22)"
 
+readcounter-bin-size: 1000000
+
 ichor-repo: ${HOME}/repos/ichorCNA-patched
 
 threads: 8

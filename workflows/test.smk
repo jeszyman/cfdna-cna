@@ -79,7 +79,7 @@ rule all:
         ),
         # Fragle CSVs
         expand(
-            "{d}/fragle/{lib}.{win}/Fragle.csv",
+            "{d}/fragle/{lib}.{win}/{lib}.{win}/Fragle.csv",
             d=D_CNA, lib=TUMOR_IDS, win=WINDOWS
         ),
         # Aggregate TF table

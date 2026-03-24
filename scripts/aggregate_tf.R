@@ -11,7 +11,7 @@ ichor_df <- map_dfr(ichor_files, read_tsv, show_col_types = FALSE)
 fragle_df <- map_dfr(fragle_files, function(f) {
   df <- read_csv(f, show_col_types = FALSE)
   # Extract library and window from path
-  parts <- str_match(f, "/fragle/([^/]+)\\.([^/]+)/Fragle\\.csv")
+  parts <- str_match(f, "/fragle/([^/]+)\\.([^/]+)/[^/]+/Fragle\\.csv")
   tibble(
     library_id = parts[,2],
     window = parts[,3],

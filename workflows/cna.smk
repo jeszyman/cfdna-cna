@@ -87,6 +87,7 @@ rule cna_bam_to_wig:
         wig=f"{D_CNA}/wig/{{library}}.{{window}}.wig",
     params:
         chromosomes=config["readcounter-chromosomes"],
+        bin_size=config["readcounter-bin-size"],
     log:
         f"{D_LOGS}/{{library}}.{{window}}_bam_to_wig.log"
     benchmark:
@@ -97,7 +98,7 @@ rule cna_bam_to_wig:
     shell:
         """
         readCounter \
-          --window 1000000 \
+          --window {params.bin_size} \
           --quality 20 \
           --chromosome "{params.chromosomes}" \
           {input.bam} > {output.wig} 2> {log}
@@ -246,12 +247,16 @@ rule cna_run_ichor:
 # Rule 6: Run Fragle
 # ---------------------------------------------------------------------------
 rule cna_run_fragle:
-    """Run Fragle ctDNA quantification on filtered BAM."""
+    """Run Fragle ctDNA quantification on filtered BAM.
+
+    Fragle creates output at {outdir}/{bam_stem}/, so the actual CSV lands
+    at {outdir}/{library}.{window}/Fragle.csv (nested under the outdir).
+    """
     input:
         bam=f"{D_CNA}/filt_bam/{{library}}.{{window}}.bam",
         bai=f"{D_CNA}/filt_bam/{{library}}.{{window}}.bam.bai",
     output:
-        csv=f"{D_CNA}/fragle/{{library}}.{{window}}/Fragle.csv",
+        csv=f"{D_CNA}/fragle/{{library}}.{{window}}/{{library}}.{{window}}/Fragle.csv",
     params:
         fragle_repo=config["fragle"]["repo-path"],
         mode=config["fragle"]["mode"],
@@ -306,7 +311,7 @@ rule cna_aggregate_results:
             pon=PON_CONFIGS.keys(), preset=PRESETS.keys()
         ),
         fragle_csvs=expand(
-            f"{D_CNA}/fragle/{{lib}}.{{win}}/Fragle.csv",
+            f"{D_CNA}/fragle/{{lib}}.{{win}}/{{lib}}.{{win}}/Fragle.csv",
             lib=TUMOR_IDS, win=WINDOWS
         ),
     output:
@@ -383,7 +388,7 @@ rule cna_plot_window_concordance:
 rule cna_plot_fragle_summary:
     input:
         fragle_csvs=expand(
-            f"{D_CNA}/fragle/{{lib}}.{{win}}/Fragle.csv",
+            f"{D_CNA}/fragle/{{lib}}.{{win}}/{{lib}}.{{win}}/Fragle.csv",
             lib=TUMOR_IDS, win=WINDOWS
         ),
     output:
